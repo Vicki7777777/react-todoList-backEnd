@@ -47,24 +47,13 @@ public class CompanyController {
 
     @GetMapping("/{id}")
     public Company getCompany(@PathVariable int id) {
-        Company company = null;
-        for (Company companyItem : companies) {
-            if (companyItem.getId() == id) {
-                company = companyItem;
-            }
-        }
-        return company;
+        return (Company) companies.stream().filter(company -> company.getId() == id);
     }
 
     @GetMapping("/{id}/employees")
     public List<Employee> getAllEmployees(@PathVariable int id) {
-        List<Employee> employees = null;
-        for (Company company : companies) {
-            if (company.getId() == id) {
-                employees = company.getEmployees();
-            }
-        }
-        return employees;
+        Company company = companies.stream().filter(companyItem -> companyItem.getId() == id).findFirst().orElse(null);
+        return company == null ? null : company.getEmployees();
     }
 
     @PutMapping("/{id}")
@@ -79,11 +68,7 @@ public class CompanyController {
 
     @DeleteMapping("/{id}")
     public void deleteAllEmployees(@PathVariable int id) {
-        for (Company companyItem : companies) {
-            if (companyItem.getId() == id) {
-                companyItem.getEmployees().clear();
-            }
-        }
+        companies.stream().filter(companyItem -> companyItem.getId() == id).findFirst().ifPresent(company -> company.getEmployees().clear());
     }
 }
 

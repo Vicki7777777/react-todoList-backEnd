@@ -21,9 +21,9 @@ public class EmployeeController {
         if (page == 0 && gender.equals("")) {
             employeesList = employees;
         } else if (!gender.equals("")) {
-            getEmployeesByGender(gender, employeesList);
+            employeesList = getEmployeesByGender(gender, employeesList);
         } else if (page > 0) {
-            return getEmployeesByPage(page, pageSize);
+            employeesList = getEmployeesByPage(page, pageSize);
         }
 
         return employeesList;
@@ -44,12 +44,13 @@ public class EmployeeController {
         return employees.subList(begin, end);
     }
 
-    private void getEmployeesByGender(@RequestParam(required = false, defaultValue = "") String gender, List<Employee> employeesList) {
+    private List<Employee> getEmployeesByGender(@RequestParam(required = false, defaultValue = "") String gender, List<Employee> employeesList) {
         for (Employee employee : employees) {
             if (employee.getGender().equals(gender)) {
                 employeesList.add(employee);
             }
         }
+        return employeesList;
     }
 
     @PostMapping
