@@ -55,8 +55,8 @@ public class CompanyController {
         }
     }
 
-    @PutMapping("/{id}")
-    public void deleteAllEmployees(@PathVariable int id, @RequestBody Company company) {
+    @DeleteMapping("/{id}")
+    public void deleteAllEmployees(@PathVariable int id) {
         for(Company companyItem : companies) {
             if(companyItem.getId() == id) {
                 companyItem.getEmployees().clear();
