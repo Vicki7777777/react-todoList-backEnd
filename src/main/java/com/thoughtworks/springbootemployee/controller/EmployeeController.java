@@ -13,13 +13,34 @@ public class EmployeeController {
 
     @GetMapping
     public List<Employee> getEmployees(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "") int pageSize,
             @RequestParam(required = false, defaultValue = "") String gender) {
         List<Employee> employeesList = new LinkedList<>();
-        for (Employee employee : employees) {
-            if (employee.getGender().equals(gender)) {
-                employeesList.add(employee);
+
+        if (page == 0 && gender.equals("")) {
+            employeesList = employees;
+        } else if (!gender.equals("")) {
+            for (Employee employee : employees) {
+                if (employee.getGender().equals(gender)) {
+                    employeesList.add(employee);
+                }
             }
+        } else if (page > 0) {
+            int begin;
+            int end;
+            int count = employees.size();
+
+            begin = (page - 1) * pageSize + 1;
+            if (count - begin > pageSize) {
+                end = begin + pageSize - 1;
+            } else {
+                end = count - 1;
+            }
+
+            return employees.subList(begin, end);
         }
+
         return employeesList;
     }
 
@@ -39,11 +60,7 @@ public class EmployeeController {
 
     @DeleteMapping("/{id}")
     public void deleteEmployee(@PathVariable int id) {
-        for (Employee employee : employees) {
-            if (employee.getId() == id) {
-                employees.remove(employee);
-            }
-        }
+        employees.removeIf(employee -> employee.getId() == id);
     }
 
     @GetMapping("/{id}")
