@@ -24,10 +24,19 @@ public class CompanyController {
     }
 
     @GetMapping(path = "/{id}")
-    public Company getOne(@PathVariable int id) {
+    public Company getCompany(@PathVariable int id) {
         Company company1 = new Company("OOCL", 1);
         Company company2 = new Company("CargoSmart", 2);
         for(Company company : Arrays.asList(company1, company2)) {
+            if(company.getId() == id) return company;
+        }
+        return null;
+    }
+
+    @GetMapping(path = "/{id}/employees")
+    public Company getAllEmployees(@PathVariable int id) {
+        Company company = new Company("OOCL", 1);
+        for(int i = 0;i < 10;i++) {
             if(company.getId() == id) return company;
         }
         return null;
