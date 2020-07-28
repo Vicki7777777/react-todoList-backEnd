@@ -22,5 +22,15 @@ public class CompanyController {
         companies.add(new Company("COSCO", 4));
         return companies;
     }
+
+    @GetMapping(path = "/{id}")
+    public Company getOne(@PathVariable int id) {
+        Company company1 = new Company("OOCL", 1);
+        Company company2 = new Company("CargoSmart", 2);
+        for(Company company : Arrays.asList(company1, company2)) {
+            if(company.getId() == id) return company;
+        }
+        return null;
+    }
 }
 
