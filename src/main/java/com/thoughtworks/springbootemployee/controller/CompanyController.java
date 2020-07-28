@@ -21,19 +21,23 @@ public class CompanyController {
         if (page == 0) {
             return companies;
         } else {
-            int begin;
-            int end;
-            int count = companies.size();
-
-            begin = (page - 1) * pageSize + 1;
-            if (count - begin > pageSize) {
-                end = begin + pageSize - 1;
-            } else {
-                end = count - 1;
-            }
-
-            return companies.subList(begin, end);
+            return getCompaniesByPage(page, pageSize);
         }
+    }
+
+    private List<Company> getCompaniesByPage(@RequestParam(required = false, defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "0") int pageSize) {
+        int begin;
+        int end;
+        int count = companies.size();
+
+        begin = (page - 1) * pageSize + 1;
+        if (count - begin > pageSize) {
+            end = begin + pageSize - 1;
+        } else {
+            end = count - 1;
+        }
+
+        return companies.subList(begin, end);
     }
 
     @PostMapping
