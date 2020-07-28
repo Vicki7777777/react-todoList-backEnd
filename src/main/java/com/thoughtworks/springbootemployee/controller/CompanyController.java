@@ -1,10 +1,8 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.model.Company;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.thoughtworks.springbootemployee.model.Employee;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -13,33 +11,57 @@ import java.util.List;
 @RestController
 @RequestMapping("/companies")
 public class CompanyController {
+    List<Company> companies = new LinkedList<>();
+
     @GetMapping
-    public List<Company> getAll() {
-        List<Company> companies = new LinkedList<>();
-        companies.add(new Company("OOCL", 1));
-        companies.add(new Company("CargoSmart", 2));
-        companies.add(new Company("OOIL", 3));
-        companies.add(new Company("COSCO", 4));
+    public List<Company> getCompanies() {
         return companies;
     }
 
-    @GetMapping(path = "/{id}")
-    public Company getCompany(@PathVariable int id) {
-        Company company1 = new Company("OOCL", 1);
-        Company company2 = new Company("CargoSmart", 2);
-        for(Company company : Arrays.asList(company1, company2)) {
-            if(company.getId() == id) return company;
-        }
-        return null;
+    @PostMapping
+    public void addCompany(@RequestBody Company company) {
+        companies.add(company);
     }
 
-    @GetMapping(path = "/{id}/employees")
-    public Company getAllEmployees(@PathVariable int id) {
-        Company company = new Company("OOCL", 1);
-        for(int i = 0;i < 10;i++) {
-            if(company.getId() == id) return company;
+    @GetMapping("/{id}")
+    public Company getCompany(@PathVariable int id) {
+        Company company = null;
+        for(Company companyItem : companies) {
+            if(companyItem.getId() == id) {
+                company = companyItem;
+            }
         }
-        return null;
+        return company;
+    }
+
+    @GetMapping("/{id}/employees")
+    public List<Employee> getAllEmployees(@PathVariable int id) {
+        List<Employee> employees = null;
+        for(Company company : companies) {
+            if(company.getId() == id) {
+                employees = company.getEmployees();
+            }
+        }
+        return employees;
+    }
+
+    @PutMapping("/{id}")
+    public void updateCompany(@PathVariable int id, @RequestBody Company company) {
+        for(Company companyItem : companies) {
+            if(companyItem.getId() == id) {
+                companyItem.setEmployees(company.getEmployees());
+                companyItem.setId(company.getId());
+            }
+        }
+    }
+
+    @PutMapping("/{id}")
+    public void deleteAllEmployees(@PathVariable int id, @RequestBody Company company) {
+        for(Company companyItem : companies) {
+            if(companyItem.getId() == id) {
+                companyItem.getEmployees().clear();
+            }
+        }
     }
 }
 
