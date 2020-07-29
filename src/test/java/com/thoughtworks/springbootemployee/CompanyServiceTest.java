@@ -55,4 +55,19 @@ public class CompanyServiceTest {
         //then
         assertNotNull(companyList);
     }
+
+    @Test
+    void should_return_specific_company_when_get_company_given_id() {
+        //given
+        int id = 1;
+        CompanyService companyService = new CompanyService();
+        Respority respority = mock(Respority.class);
+        given(respority.getAllCompanies()).willReturn(companies);
+
+        //when
+        Company company = companyService.getCompanyById(id);
+
+        //then
+        assertEquals(companies.get(0), company);
+    }
 }
