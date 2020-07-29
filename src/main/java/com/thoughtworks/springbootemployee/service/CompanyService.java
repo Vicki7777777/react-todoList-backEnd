@@ -3,46 +3,50 @@ package com.thoughtworks.springbootemployee.service;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.respority.CompanyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+@Service
 public class CompanyService {
+
+/*    private Company company;*/
+    @Autowired
     private CompanyRepository companyRepository;
 
-    public CompanyService(CompanyRepository companyRepository) {
-        this.companyRepository = companyRepository;
-    }
-
     public List<Company> getAllCompanies() {
-        return companyRepository.getAllCompanies();
+        return companyRepository.findAll();
     }
 
-    public Company getCompanyById(int id) {
-        return getAllCompanies().stream().filter(company -> company.getId() == id).findFirst().orElse(null);
+    public Company getCompanyById(Integer id) {
+        return companyRepository.findById(id).orElse(null);
     }
 
-    public List<Employee> getCompanyEmployeesById(int id) {
+    public List<Employee> getCompanyEmployeesById(Integer id) {
         return getCompanyById(id).getEmployees();
     }
 
-    public List<Company> getCompanyByPage(int page, int pageSize) {
-        int begin;
-        int end;
-        int count = getAllCompanies().size();
-
-        begin = (page - 1) * pageSize;
-        if (count - begin < pageSize) {
-            end = count - 1;
-        } else {
-            end = begin + pageSize - 1;
-        }
-
-        return getAllCompanies().subList(begin, end);
+    public PageImpl<Company> getCompanyByPage(int page, int pageSize) {
+        return (PageImpl<Company>) companyRepository.findAll(PageRequest.of(page, pageSize));
     }
 
     public Company createCompany(Company company) {
-        List<Company> companies = getAllCompanies();
-        companies.add(company);
-        return companies.contains(company) ? company : null;
+        return companyRepository.save(company);
+    }
+
+    public Company updateCompany(Integer companyId, Company companyInfo) {
+        Company company = getCompanyById(companyId);
+        company.setEmployees(companyInfo.getEmployees());
+        company.setCompanyName(companyInfo.getCompanyName());
+        return companyRepository.save(company);
+    }
+
+    public Boolean removeCompany(Integer companyId) {
+        companyRepository.deleteById(companyId);
+        return getCompanyById(companyId) == null;
     }
 }

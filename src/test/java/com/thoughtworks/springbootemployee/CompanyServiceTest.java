@@ -1,24 +1,41 @@
 package com.thoughtworks.springbootemployee;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.respority.CompanyRepository;
+import com.thoughtworks.springbootemployee.respority.EmployeeRepository;
 import com.thoughtworks.springbootemployee.service.CompanyService;
+import com.thoughtworks.springbootemployee.service.EmployeeService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(SpringExtension.class)
 public class CompanyServiceTest {
     List<Company> companies = new LinkedList<>();
+
+    @Mock
+    private CompanyRepository companyRepository;
+
+    @InjectMocks
+    private CompanyService companyService;
 
     @BeforeAll
     public void createCompanies() {
@@ -44,11 +61,7 @@ public class CompanyServiceTest {
     @Test
     void should_return_companies_when_get_all_companyes_given_company_service() {
         //given
-        CompanyRepository companyRepository = mock(CompanyRepository.class);
-        CompanyService companyService = new CompanyService(companyRepository);
-        given(companyRepository.getAllCompanies()).willReturn(companies);
-
-        given(companyRepository.getAllCompanies()).willReturn(companies);
+        given(companyRepository.findAll()).willReturn(companies);
 
         //when
         List<Company> companyList = companyService.getAllCompanies();
@@ -62,32 +75,34 @@ public class CompanyServiceTest {
     @Test
     void should_return_specific_company_when_get_company_given_id() {
         //given
-        int id = 1;
-        CompanyRepository companyRepository = mock(CompanyRepository.class);
-        CompanyService companyService = new CompanyService(companyRepository);
-        given(companyRepository.getAllCompanies()).willReturn(companies);
+        Integer id = 1;
+        Company expectedCompany = companies.get(0);
+        given(companyRepository.findById(id)).willReturn(java.util.Optional.ofNullable(expectedCompany));
 
         //when
-        Company company = companyService.getCompanyById(id);
+        Company selectedCompany = companyService.getCompanyById(id);
 
         //then
-        assertEquals(companies.get(0), company);
+        assertEquals(expectedCompany, selectedCompany);
     }
 
     @Test
     void should_return_specific_company_employees_when_get_company_given_id() {
         //given
-        int id = 1;
-        CompanyRepository companyRepository = mock(CompanyRepository.class);
-        CompanyService companyService = new CompanyService(companyRepository);
-        given(companyRepository.getAllCompanies()).willReturn(companies);
+        Integer id = 1;
+        Company expectedCompany = companies.get(0);
+        List<Employee> expectedEmployees = expectedCompany.getEmployees();
+        given(companyRepository.findById(id)).willReturn(java.util.Optional.of(expectedCompany));
 
         //when
         List<Employee> employees = companyService.getCompanyEmployeesById(id);
 
         //then
-        assertEquals(companies.get(0).getEmployees().size(), employees.size());
-        assertEquals(companies.get(0).getEmployees(), employees);
+        assertNotNull(employees);
+        assertEquals(expectedCompany.getEmployees().size(), employees.size());
+        for (int i = 0; i < employees.size(); i++) {
+            assertEquals(expectedCompany.getEmployees().get(i), employees.get(i));
+        };
     }
 
     @Test
@@ -95,30 +110,58 @@ public class CompanyServiceTest {
         //given
         int PAGE = 1;
         int PAGE_SIZE = 5;
-        CompanyRepository companyRepository = mock(CompanyRepository.class);
-        CompanyService companyService = new CompanyService(companyRepository);
-        given(companyRepository.getAllCompanies()).willReturn(companies);
+        PageImpl<Company> result = new PageImpl<>(companies.subList(0, 4));
+        given(companyRepository.findAll(PageRequest.of(PAGE, PAGE_SIZE))).willReturn((PageImpl<Company>) result);
 
         //when
-        List<Company> companyList = companyService.getCompanyByPage(PAGE, PAGE_SIZE);
+        Page<Company> foundCompanies = companyService.getCompanyByPage(PAGE, PAGE_SIZE);
 
         //then
-        assertEquals(companies.subList(0, 4), companyList);
+        assertEquals(result, foundCompanies);
     }
 
     @Test
     void should_new_company_when_add_company_given_one_company() {
         //given
         Company company = new Company(20, "HansOOCL");
-        CompanyRepository companyRepository = mock(CompanyRepository.class);
-        CompanyService companyService = new CompanyService(companyRepository);
-        given(companyRepository.getAllCompanies()).willReturn(companies);
+        given(companyRepository.save(company)).willReturn(company);
 
         //when
-       Company createdCompany = companyService.createCompany(company);
+        Company createdCompany = companyService.createCompany(company);
 
         //then
         assertEquals(company, createdCompany);
     }
 
+    @Test
+    void should_updated_when_updata_employee_given_employee_message() {
+        //given
+        int companyId = 1;
+        Company companyInfo = new Company(companyId, "HansOOCL2");
+        companyInfo.setEmployees(Arrays.asList(
+                new Employee(1, "Hans", 24, "male", 5000),
+                new Employee(2, "Amy", 22, "female", 9000)));
+        given(companyRepository.findById(companyId)).willReturn(java.util.Optional.of(companyInfo));
+        given(companyRepository.save(companyInfo)).willReturn(companyInfo);
+
+        //when
+        Company company = companyService.updateCompany(companyId, companyInfo);
+
+        //then
+        assertEquals(company,companyInfo);
+    }
+
+    @Test
+    void should_delete_employee_when_remove_employee_given_id() {
+        //given
+        Integer companyId = 20;
+        Company expectedCompany = new Company(25, "VickiOOCL");
+        companyService.createCompany(expectedCompany);
+
+        //when
+        Boolean result = companyService.removeCompany(companyId);
+
+        //then
+        assertTrue(result);
+    }
 }

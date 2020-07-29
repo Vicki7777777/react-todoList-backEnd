@@ -9,19 +9,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(SpringExtension.class)
 public class EmployeeServiceTest {
     List<Employee> employees = new LinkedList<>();
+
+    @Mock
+    private EmployeeRepository employeeRepository;
+
+    @InjectMocks
+    private EmployeeService employeeService;
 
     @BeforeAll
     public void createCompanies() {
@@ -37,8 +48,6 @@ public class EmployeeServiceTest {
     @Test
     void should_return_employees_when_get_all_employees_given_no_paramters() {
         //given
-        EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
-        EmployeeService employeeService = new EmployeeService(employeeRepository);
         given(employeeRepository.findAll()).willReturn(employees);
 
         //when
@@ -53,8 +62,6 @@ public class EmployeeServiceTest {
         //given
         Integer id = 1;
         Employee expectedEmployee = employees.get(0);
-        EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
-        EmployeeService employeeService = new EmployeeService(employeeRepository);
         given(employeeRepository.findById(id)).willReturn(java.util.Optional.ofNullable(expectedEmployee));
 
         //when
@@ -70,8 +77,6 @@ public class EmployeeServiceTest {
         int PAGE = 1;
         int PAGE_SIZE = 5;
         PageImpl<Employee> result = new PageImpl<>(employees.subList(0, 4));
-        EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
-        EmployeeService employeeService = new EmployeeService(employeeRepository);
         given(employeeRepository.findAll(PageRequest.of(PAGE, PAGE_SIZE))).willReturn((PageImpl<Employee>) result);
 
         //when
@@ -86,8 +91,6 @@ public class EmployeeServiceTest {
         //given
         String gender = "male";
         List<Employee> expectedEmployees = employees.stream().filter(employee -> employee.getGender().equals("male")).collect(Collectors.toList());
-        EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
-        EmployeeService employeeService = new EmployeeService(employeeRepository);
         given(employeeRepository.findByGender(gender)).willReturn(expectedEmployees);
 
         //when
@@ -101,15 +104,42 @@ public class EmployeeServiceTest {
     @Test
     void should_add_employee_when_create_employee_given_employee() {
         //given
-        Employee expectedEmployees = new Employee(8, "Ace", 23, "male", 9900);
-        EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
-        EmployeeService employeeService = new EmployeeService(employeeRepository);
-        given(employeeRepository.save(expectedEmployees)).willReturn(expectedEmployees);
+        Employee expectedEmployee = new Employee(8, "Ace", 23, "male", 9900);
+        given(employeeRepository.save(expectedEmployee)).willReturn(expectedEmployee);
 
         //when
-        Employee createdEmployee = employeeService.createEmployee(expectedEmployees);
+        Employee createdEmployee = employeeService.createEmployee(expectedEmployee);
 
         //then
-        assertEquals(expectedEmployees, createdEmployee);
+        assertEquals(expectedEmployee, createdEmployee);
+    }
+
+    @Test
+    void should_updated_when_updata_employee_given_employee_message() {
+        //given
+        Employee employeeInfo = new Employee(1, "Hans", 29, "female", 50000);
+        Integer employeeId = 1;
+        given(employeeRepository.findById(employeeId)).willReturn(java.util.Optional.ofNullable(employeeInfo));
+        given(employeeRepository.save(employeeInfo)).willReturn(employeeInfo);
+
+        //when
+        Employee employee = employeeService.updataEmployee(employeeId, employeeInfo);
+
+        //then
+        assertEquals(employee, employeeInfo);
+    }
+
+    @Test
+    void should_delete_employee_when_remove_employee_given_id() {
+        //given
+        Integer employeeId = 20;
+        Employee expectedEmployees = new Employee(20, "Ace", 23, "male", 9900);
+        employeeService.createEmployee(expectedEmployees);
+
+        //when
+        Boolean result = employeeService.removeEmployee(employeeId);
+
+        //then
+        assertTrue(result);
     }
 }

@@ -2,6 +2,7 @@ package com.thoughtworks.springbootemployee.service;
 
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.respority.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -13,11 +14,9 @@ import java.util.Optional;
 
 @Service
 public class EmployeeService {
-    private EmployeeRepository employeeRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
@@ -37,5 +36,19 @@ public class EmployeeService {
 
     public Employee createEmployee(Employee employee) {
         return employeeRepository.save(employee);
+    }
+
+    public Employee updataEmployee(Integer id, Employee employeeInfo) {
+        Employee employee = getEmployeeById(id);
+        employee.setAge(employeeInfo.getAge());
+        employee.setGender(employeeInfo.getGender());
+        employee.setSalary(employeeInfo.getSalary());
+        employee.setName(employeeInfo.getName());
+        return employeeRepository.save(employee);
+    }
+
+    public Boolean removeEmployee(Integer employeeId) {
+        employeeRepository.deleteById(employeeId);
+        return getEmployeeById(employeeId) == null;
     }
 }

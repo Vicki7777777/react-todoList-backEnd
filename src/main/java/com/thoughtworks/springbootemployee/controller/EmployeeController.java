@@ -1,6 +1,9 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.model.Employee;
+import com.thoughtworks.springbootemployee.respority.EmployeeRepository;
+import com.thoughtworks.springbootemployee.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -10,6 +13,9 @@ import java.util.List;
 @RequestMapping("/employees")
 public class EmployeeController {
     List<Employee> employees = new LinkedList<>();
+
+    @Autowired
+    private EmployeeService employeeService;
 
     public EmployeeController() {
         employees.add(new Employee(1, "Hans", 24, "male", 5000));
@@ -29,29 +35,14 @@ public class EmployeeController {
         List<Employee> employeesList = new LinkedList<>();
 
         if (page == 0 && gender.equals("")) {
-            employeesList = employees;
+            employeesList = employeeService.getAllEmployees();
         } else if (!gender.equals("")) {
-            employeesList = getEmployeesByGender(gender);
+            employeesList = employeeService.getEmployeeByGender(gender);
         } else if (page > 0) {
-            employeesList = getEmployeesByPage(page, pageSize);
+            employeesList = (List<Employee>) employeeService.getEmployeeByPage(page, pageSize);
         }
 
         return employeesList;
-    }
-
-    private List<Employee> getEmployeesByPage(int page, int pageSize) {
-        int begin;
-        int end;
-        int count = employees.size();
-
-        begin = (page - 1) * pageSize;
-        if (count - begin < pageSize) {
-            end = count - 1;
-        } else {
-            end = begin + pageSize;
-        }
-
-        return employees.subList(begin, end);
     }
 
     private List<Employee> getEmployeesByGender(String gender) {
@@ -66,33 +57,25 @@ public class EmployeeController {
 
     @PostMapping
     public void addEmployee(@RequestBody Employee employee) {
-        employees.add(employee);
+        employeeService.createEmployee(employee);
     }
 
     @PutMapping("/{id}")
     public Employee updateEmployee(@PathVariable int id, @RequestBody Employee employee) {
-        for (Employee employeeItem : employees) {
-            if (employeeItem.getId() == id) {
-                employeeItem.setGender(employee.getGender());
-            }
-        }
-        return employee;
+        return employeeService.updataEmployee(id, employee);
     }
 
     @DeleteMapping("/{id}")
     public String deleteEmployee(@PathVariable int id) {
-        employees.removeIf(employee -> employee.getId() == id);
-        return "Delete Employee id = " + id + " Success";
+        employeeService.removeEmployee(id);
+        if(employeeService.getEmployeeById(id) == null) {
+            return "Delete Employee id = " + id + " Success";
+        }
+        return "Delete Unsuccess";
     }
 
     @GetMapping("/{id}")
     public Employee getEmployeeById(@PathVariable int id) {
-        Employee employee = null;
-        for (Employee employeeItem : employees) {
-            if (employeeItem.getId() == id) {
-                employee = employeeItem;
-            }
-        }
-        return employee;
+        return employeeService.getEmployeeById(id);
     }
 }
