@@ -70,4 +70,19 @@ public class CompanyServiceTest {
         //then
         assertEquals(companies.get(0), company);
     }
+
+    @Test
+    void should_return_specific_company_employees_when_get_company_given_id() {
+        //given
+        int id = 1;
+        Respority respority = mock(Respority.class);
+        CompanyService companyService = new CompanyService(respority);
+        given(respority.getAllCompanies()).willReturn(companies);
+
+        //when
+        List<Employee> employees = companyService.getCompanyEmployeesById(id);
+
+        //then
+        assertEquals(companies.get(0).getEmployees(), employees);
+    }
 }
