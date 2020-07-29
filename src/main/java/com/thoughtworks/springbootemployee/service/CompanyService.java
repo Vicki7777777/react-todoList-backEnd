@@ -2,19 +2,19 @@ package com.thoughtworks.springbootemployee.service;
 
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
-import com.thoughtworks.springbootemployee.respority.Respority;
+import com.thoughtworks.springbootemployee.respority.CompanyRepository;
 
 import java.util.List;
 
 public class CompanyService {
-    private Respority respority = new Respority();
+    private CompanyRepository companyRepository;
 
-    public CompanyService(Respority respority) {
-        this.respority = respority;
+    public CompanyService(CompanyRepository companyRepository) {
+        this.companyRepository = companyRepository;
     }
 
     public List<Company> getAllCompanies() {
-        return respority.getAllCompanies();
+        return companyRepository.getAllCompanies();
     }
 
     public Company getCompanyById(int id) {

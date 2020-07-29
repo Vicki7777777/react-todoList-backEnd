@@ -2,15 +2,16 @@ package com.thoughtworks.springbootemployee.respority;
 
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
+import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Respority {
+public class CompanyRepository {
     private List<Company> companies = new ArrayList<>();
 
-    public Respority() {
+    public CompanyRepository() {
         this.companies.add(new Company(1, "OOCL"));
         this.companies.add(new Company(2, "CargoSmart"));
         this.companies.add(new Company(3, "Alibaba"));

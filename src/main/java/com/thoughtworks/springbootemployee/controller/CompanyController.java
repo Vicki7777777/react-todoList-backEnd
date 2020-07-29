@@ -59,8 +59,7 @@ public class CompanyController {
     }
 
     @PostMapping
-    //TODO code
-    public Company addCompany(@RequestBody Company company) {
+    public Company createCompany(@RequestBody Company company) {
         companies.add(company);
         return companies.contains(company) ? company : null;
     }
@@ -82,7 +81,6 @@ public class CompanyController {
     }
 
     @PutMapping("/{id}")
-    //TODO PATCH
     public void updateCompany(@PathVariable int id, @RequestBody Company company) {
         for (Company companyItem : companies) {
             if (companyItem.getId() == id) {
@@ -93,8 +91,8 @@ public class CompanyController {
     }
 
     @DeleteMapping("/{id}")
+//    TODO return type
     public String deleteAllEmployees(@PathVariable int id) {
-//        TODO
         companies.stream().filter(companyItem -> companyItem.getId() == id).findFirst().ifPresent(company -> company.getEmployees().clear());
         return "Delete Success";
     }

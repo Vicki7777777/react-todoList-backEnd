@@ -7,7 +7,7 @@ import static org.mockito.Mockito.mock;
 
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
-import com.thoughtworks.springbootemployee.respority.Respority;
+import com.thoughtworks.springbootemployee.respority.CompanyRepository;
 import com.thoughtworks.springbootemployee.service.CompanyService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -44,11 +44,11 @@ public class CompanyServiceTest {
     @Test
     void should_return_companies_when_get_all_companyes_given_company_service() {
         //given
-        Respority respority = mock(Respority.class);
-        CompanyService companyService = new CompanyService(respority);
-        given(respority.getAllCompanies()).willReturn(companies);
+        CompanyRepository companyRepository = mock(CompanyRepository.class);
+        CompanyService companyService = new CompanyService(companyRepository);
+        given(companyRepository.getAllCompanies()).willReturn(companies);
 
-        given(respority.getAllCompanies()).willReturn(companies);
+        given(companyRepository.getAllCompanies()).willReturn(companies);
 
         //when
         List<Company> companyList = companyService.getAllCompanies();
@@ -63,9 +63,9 @@ public class CompanyServiceTest {
     void should_return_specific_company_when_get_company_given_id() {
         //given
         int id = 1;
-        Respority respority = mock(Respority.class);
-        CompanyService companyService = new CompanyService(respority);
-        given(respority.getAllCompanies()).willReturn(companies);
+        CompanyRepository companyRepository = mock(CompanyRepository.class);
+        CompanyService companyService = new CompanyService(companyRepository);
+        given(companyRepository.getAllCompanies()).willReturn(companies);
 
         //when
         Company company = companyService.getCompanyById(id);
@@ -78,9 +78,9 @@ public class CompanyServiceTest {
     void should_return_specific_company_employees_when_get_company_given_id() {
         //given
         int id = 1;
-        Respority respority = mock(Respority.class);
-        CompanyService companyService = new CompanyService(respority);
-        given(respority.getAllCompanies()).willReturn(companies);
+        CompanyRepository companyRepository = mock(CompanyRepository.class);
+        CompanyService companyService = new CompanyService(companyRepository);
+        given(companyRepository.getAllCompanies()).willReturn(companies);
 
         //when
         List<Employee> employees = companyService.getCompanyEmployeesById(id);
@@ -95,9 +95,9 @@ public class CompanyServiceTest {
         //given
         int PAGE = 1;
         int PAGE_SIZE = 5;
-        Respority respority = mock(Respority.class);
-        CompanyService companyService = new CompanyService(respority);
-        given(respority.getAllCompanies()).willReturn(companies);
+        CompanyRepository companyRepository = mock(CompanyRepository.class);
+        CompanyService companyService = new CompanyService(companyRepository);
+        given(companyRepository.getAllCompanies()).willReturn(companies);
 
         //when
         List<Company> companyList = companyService.getCompanyByPage(PAGE, PAGE_SIZE);
@@ -110,9 +110,9 @@ public class CompanyServiceTest {
     void should_new_company_when_add_company_given_one_company() {
         //given
         Company company = new Company(20, "HansOOCL");
-        Respority respority = mock(Respority.class);
-        CompanyService companyService = new CompanyService(respority);
-        given(respority.getAllCompanies()).willReturn(companies);
+        CompanyRepository companyRepository = mock(CompanyRepository.class);
+        CompanyService companyService = new CompanyService(companyRepository);
+        given(companyRepository.getAllCompanies()).willReturn(companies);
 
         //when
        Company createdCompany = companyService.createCompany(company);
