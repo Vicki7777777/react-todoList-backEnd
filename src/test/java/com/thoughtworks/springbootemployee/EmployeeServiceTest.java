@@ -89,10 +89,27 @@ public class EmployeeServiceTest {
         EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
         EmployeeService employeeService = new EmployeeService(employeeRepository);
         given(employeeRepository.findByGender(gender)).willReturn(expectedEmployees);
+
         //when
         List<Employee> employeeList = employeeService.getEmployeeByGender(gender);
+
         //then
         assertEquals(expectedEmployees, employeeList);
 
+    }
+
+    @Test
+    void should_add_employee_when_create_employee_given_employee() {
+        //given
+        Employee expectedEmployees = new Employee(8, "Ace", 23, "male", 9900);
+        EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
+        EmployeeService employeeService = new EmployeeService(employeeRepository);
+        given(employeeRepository.save(expectedEmployees)).willReturn(expectedEmployees);
+
+        //when
+        Employee createdEmployee = employeeService.createEmployee(expectedEmployees);
+
+        //then
+        assertEquals(expectedEmployees, createdEmployee);
     }
 }
