@@ -44,8 +44,9 @@ public class CompanyServiceTest {
     @Test
     void should_return_companies_when_get_all_companyes_given_company_service() {
         //given
-        CompanyService companyService = new CompanyService();
         Respority respority = mock(Respority.class);
+        CompanyService companyService = new CompanyService(respority);
+        given(respority.getAllCompanies()).willReturn(companies);
 
         given(respority.getAllCompanies()).willReturn(companies);
 
@@ -54,14 +55,15 @@ public class CompanyServiceTest {
 
         //then
         assertNotNull(companyList);
+        assertEquals(companies, companyList);
     }
 
     @Test
     void should_return_specific_company_when_get_company_given_id() {
         //given
         int id = 1;
-        CompanyService companyService = new CompanyService();
         Respority respority = mock(Respority.class);
+        CompanyService companyService = new CompanyService(respority);
         given(respority.getAllCompanies()).willReturn(companies);
 
         //when
