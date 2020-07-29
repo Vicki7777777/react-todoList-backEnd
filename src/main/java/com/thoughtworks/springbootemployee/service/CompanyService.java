@@ -11,4 +11,8 @@ public class CompanyService {
     public List<Company> getAllCompanies() {
         return respority.getAllCompanies();
     }
+
+    public Company getCompanyById(int id) {
+        return getAllCompanies().stream().filter(company -> company.getId() == id).findFirst().orElse(null);
+    }
 }
