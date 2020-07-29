@@ -12,9 +12,9 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -75,12 +75,24 @@ public class EmployeeServiceTest {
         given(employeeRepository.findAll(PageRequest.of(PAGE, PAGE_SIZE))).willReturn((PageImpl<Employee>) result);
 
         //when
-        Page foundEmployees = employeeService.getEmployeeByPage(PAGE, PAGE_SIZE);
+        Page<Employee> foundEmployees = employeeService.getEmployeeByPage(PAGE, PAGE_SIZE);
 
         //then
         assertEquals(result, foundEmployees);
     }
 
-//    @Test
-//    void should_return_male_employee_when_find_employee_given_page_pageSize()
+    @Test
+    void should_return_male_employees_when_find_employees_given_male() {
+        //given
+        String gender = "male";
+        List<Employee> expectedEmployees = employees.stream().filter(employee -> employee.getGender().equals("male")).collect(Collectors.toList());
+        EmployeeRepository employeeRepository = mock(EmployeeRepository.class);
+        EmployeeService employeeService = new EmployeeService(employeeRepository);
+        given(employeeRepository.findByGender(gender)).willReturn(expectedEmployees);
+        //when
+        List<Employee> employeeList = employeeService.getEmployeeByGender(gender);
+        //then
+        assertEquals(expectedEmployees, employeeList);
+
+    }
 }

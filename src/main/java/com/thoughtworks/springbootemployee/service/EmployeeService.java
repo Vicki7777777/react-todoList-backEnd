@@ -30,4 +30,8 @@ public class EmployeeService {
     public PageImpl<Employee> getEmployeeByPage(int page, int page_size) {
         return (PageImpl<Employee>) employeeRepository.findAll(PageRequest.of(page, page_size));
     }
+
+    public List<Employee> getEmployeeByGender(String gender) {
+        return employeeRepository.findByGender(gender);
+    }
 }
