@@ -24,4 +24,19 @@ public class CompanyService {
     public List<Employee> getCompanyEmployeesById(int id) {
         return getCompanyById(id).getEmployees();
     }
+
+    public List<Company> getCompanyByPage(int page, int pageSize) {
+        int begin;
+        int end;
+        int count = getAllCompanies().size();
+
+        begin = (page - 1) * pageSize;
+        if (count - begin < pageSize) {
+            end = count - 1;
+        } else {
+            end = begin + pageSize - 1;
+        }
+
+        return getAllCompanies().subList(begin, end);
+    }
 }

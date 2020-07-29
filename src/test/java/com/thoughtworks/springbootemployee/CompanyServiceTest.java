@@ -30,12 +30,12 @@ public class CompanyServiceTest {
         for (Company company : companies) {
             List<Employee> employees = new LinkedList<>();
             employees.add(new Employee(1, "Hans", 24, "male", 5000));
-            employees.add(new Employee(2, "Amy", 22,"female", 9000));
-            employees.add(new Employee(3, "Ray", 28,"male", 10000));
-            employees.add(new Employee(4, "Sky", 27,"female", 8000));
-            employees.add(new Employee(5, "Hovees", 25,"male", 7000));
-            employees.add(new Employee(6, "Mandy", 22,"male", 8888));
-            employees.add(new Employee(7, "Ace", 23,"male", 9000));
+            employees.add(new Employee(2, "Amy", 22, "female", 9000));
+            employees.add(new Employee(3, "Ray", 28, "male", 10000));
+            employees.add(new Employee(4, "Sky", 27, "female", 8000));
+            employees.add(new Employee(5, "Hovees", 25, "male", 7000));
+            employees.add(new Employee(6, "Mandy", 22, "male", 8888));
+            employees.add(new Employee(7, "Ace", 23, "male", 9000));
             company.setEmployees(employees);
         }
     }
@@ -55,6 +55,7 @@ public class CompanyServiceTest {
 
         //then
         assertNotNull(companyList);
+        assertEquals(companies.size(), companyList.size());
         assertEquals(companies, companyList);
     }
 
@@ -85,6 +86,23 @@ public class CompanyServiceTest {
         List<Employee> employees = companyService.getCompanyEmployeesById(id);
 
         //then
+        assertEquals(companies.get(0).getEmployees().size(), employees.size());
         assertEquals(companies.get(0).getEmployees(), employees);
+    }
+
+    @Test
+    void should_return_specific_company_when_get_company_given_page_pageSize() {
+        //given
+        int PAGE = 1;
+        int PAGE_SIZE = 5;
+        Respority respority = mock(Respority.class);
+        CompanyService companyService = new CompanyService(respority);
+        given(respority.getAllCompanies()).willReturn(companies);
+
+        //when
+        List<Company> companyList = companyService.getCompanyByPage(PAGE, PAGE_SIZE);
+
+        //then
+        assertEquals(companies.subList(0, 4), companyList);
     }
 }
