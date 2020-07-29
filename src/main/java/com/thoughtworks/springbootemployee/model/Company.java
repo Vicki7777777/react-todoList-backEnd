@@ -4,20 +4,20 @@ import java.util.List;
 
 public class Company {
     private int id;
-    private String name;
+    private String companyName;
     private List<Employee> employees;
 
-    public Company(String name, int id) {
-        this.name = name;
+    public Company(int id, String name) {
+        this.companyName = name;
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     public int getId() {
