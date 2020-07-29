@@ -39,4 +39,10 @@ public class CompanyService {
 
         return getAllCompanies().subList(begin, end);
     }
+
+    public Company createCompany(Company company) {
+        List<Company> companies = getAllCompanies();
+        companies.add(company);
+        return companies.contains(company) ? company : null;
+    }
 }

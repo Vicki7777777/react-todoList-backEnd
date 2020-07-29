@@ -105,4 +105,20 @@ public class CompanyServiceTest {
         //then
         assertEquals(companies.subList(0, 4), companyList);
     }
+
+    @Test
+    void should_new_company_when_add_company_given_one_company() {
+        //given
+        Company company = new Company(20, "HansOOCL");
+        Respority respority = mock(Respority.class);
+        CompanyService companyService = new CompanyService(respority);
+        given(respority.getAllCompanies()).willReturn(companies);
+
+        //when
+       Company createdCompany = companyService.createCompany(company);
+
+        //then
+        assertEquals(company, createdCompany);
+    }
+
 }
