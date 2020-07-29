@@ -29,22 +29,22 @@ public class EmployeeController {
         return employeesList;
     }
 
-    private List<Employee> getEmployeesByPage(@RequestParam(required = false, defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "") int pageSize) {
+    private List<Employee> getEmployeesByPage(int page, int pageSize) {
         int begin;
         int end;
         int count = employees.size();
 
-        begin = (page - 1) * pageSize + 1;
+        begin = (page - 1) * pageSize;
         if (count - begin > pageSize) {
-            end = begin + pageSize - 1;
-        } else {
             end = count - 1;
+        } else {
+            end = begin + pageSize - 1;
         }
 
         return employees.subList(begin, end);
     }
 
-    private List<Employee> getEmployeesByGender(@RequestParam(required = false, defaultValue = "") String gender, List<Employee> employeesList) {
+    private List<Employee> getEmployeesByGender(String gender, List<Employee> employeesList) {
         for (Employee employee : employees) {
             if (employee.getGender().equals(gender)) {
                 employeesList.add(employee);

@@ -25,16 +25,16 @@ public class CompanyController {
         }
     }
 
-    private List<Company> getCompaniesByPage(@RequestParam(required = false, defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "0") int pageSize) {
+    private List<Company> getCompaniesByPage(int page, int pageSize) {
         int begin;
         int end;
         int count = companies.size();
 
-        begin = (page - 1) * pageSize + 1;
+        begin = (page - 1) * pageSize;
         if (count - begin > pageSize) {
-            end = begin + pageSize - 1;
-        } else {
             end = count - 1;
+        } else {
+            end = begin + pageSize - 1;
         }
 
         return companies.subList(begin, end);
