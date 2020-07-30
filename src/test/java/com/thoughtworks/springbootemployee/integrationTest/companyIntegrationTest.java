@@ -6,8 +6,8 @@ import com.thoughtworks.springbootemployee.respority.CompanyRepository;
 import com.thoughtworks.springbootemployee.respority.EmployeeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +19,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class companyIntegrationTest {
@@ -32,16 +31,16 @@ public class companyIntegrationTest {
     public EmployeeRepository employeeRepository;
 
     @AfterEach
-    public void deleteAllData(){
+    public void deleteAllData() {
         companyRepository.deleteAll();
         employeeRepository.deleteAll();
     }
 
-    Company company1 = new Company( "OOCL",null);
-    Company company2 = new Company( "CargoSmart",null);
-    Company company3 = new Company( "Alibaba",null);
-    Company company4 = new Company( "Gree",null);
-    Company company5 = new Company( "Baidu",null);
+    Company company1 = new Company("OOCL", null);
+    Company company2 = new Company("CargoSmart", null);
+    Company company3 = new Company("Alibaba", null);
+    Company company4 = new Company("Gree", null);
+    Company company5 = new Company("Baidu", null);
 
 
     Employee employee1;
@@ -51,32 +50,32 @@ public class companyIntegrationTest {
     Employee employee5;
     Employee employee6;
 
-    @BeforeAll
+    @BeforeEach
     public void createCompanies() {
-        companyRepository.save(company1);
-        companyRepository.save(company2);
-        companyRepository.save(company3);
-        companyRepository.save(company4);
-        companyRepository.save(company5);
+        company1 = companyRepository.save(company1);
+        company2 = companyRepository.save(company2);
+        company3 = companyRepository.save(company3);
+        company4 = companyRepository.save(company4);
+        company5 = companyRepository.save(company5);
 
-        employee1 = new Employee(1, "Hans", 24, "male", 5000,company1.getCompanyId());
-        employee2 = new Employee(2, "Amy", 22, "female", 9000,company1.getCompanyId());
-        employee3 = new Employee(3, "Ray", 28, "male", 10000,company2.getCompanyId());
-        employee4 = new Employee(4, "Sky", 27, "female", 8000,company3.getCompanyId());
-        employee5 = new Employee(5, "Hovees", 25, "male", 7000,company4.getCompanyId());
-        employee6 = new Employee(6, "Mandy", 22, "male", 8888,company5.getCompanyId());
+        employee1 = new Employee(1, "Hans", 24, "male", 5000, company1.getCompanyId());
+        employee2 = new Employee(2, "Amy", 22, "female", 9000, company1.getCompanyId());
+        employee3 = new Employee(3, "Ray", 28, "male", 10000, company2.getCompanyId());
+        employee4 = new Employee(4, "Sky", 27, "female", 8000, company3.getCompanyId());
+        employee5 = new Employee(5, "Hovees", 25, "male", 7000, company4.getCompanyId());
+        employee6 = new Employee(6, "Mandy", 22, "male", 8888, company5.getCompanyId());
 
-        companyRepository.save(company1);
-        companyRepository.save(company2);
-        companyRepository.save(company3);
-        companyRepository.save(company4);
-        companyRepository.save(company5);
-        employeeRepository.save(employee1);
-        employeeRepository.save(employee2);
-        employeeRepository.save(employee3);
-        employeeRepository.save(employee4);
-        employeeRepository.save(employee5);
-        employeeRepository.save(employee6);
+        company1= companyRepository.save(company1);
+        company2=companyRepository.save(company2);
+        company3=companyRepository.save(company3);
+        company4=companyRepository.save(company4);
+        company5=companyRepository.save(company5);
+        employee1=employeeRepository.save(employee1);
+        employee2=employeeRepository.save(employee2);
+        employee3=employeeRepository.save(employee3);
+        employee4=employeeRepository.save(employee4);
+        employee5=employeeRepository.save(employee5);
+        employee6=employeeRepository.save(employee6);
     }
 
     @Test
@@ -89,14 +88,14 @@ public class companyIntegrationTest {
 
     @Test
     void should_return_specific_company_when_hit_get_companies_endpoint_given_company_id() throws Exception {
-        mockMvc.perform(get("/companies/{id}",company1.getCompanyId()).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/companies/{id}", company1.getCompanyId()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.companyName").value(company1.getCompanyName()));
     }
 
     @Test
-    void should_return_specific_company_employees_when_hit_get_companies_endpoint_given_company_id() throws Exception{
-        mockMvc.perform(get("/companies/{id}/employees",company2.getCompanyId()).contentType(MediaType.APPLICATION_JSON))
+    void should_return_specific_company_employees_when_hit_get_companies_endpoint_given_company_id() throws Exception {
+        mockMvc.perform(get("/companies/{id}/employees", company2.getCompanyId()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value(employee3.getName()))
                 .andExpect(jsonPath("$[0].age").value(employee3.getAge()))
@@ -137,14 +136,14 @@ public class companyIntegrationTest {
                 "        \"companyName\": 1,\n" +
                 "         \"companyId\":1\n" +
                 "}";
-        mockMvc.perform(put("/companies/2").contentType(MediaType.APPLICATION_JSON).content(companyBody))
+        mockMvc.perform(put("/companies/"+company1.getCompanyId()).contentType(MediaType.APPLICATION_JSON).content(companyBody))
                 .andExpect(status().isOk());
     }
 
     @Test
     void should_delete_employee_when_remove_employee_given_id() throws Exception {
-        mockMvc.perform(delete("/companies/1").contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk());
+        mockMvc.perform(delete("/companies/"+company1.getCompanyId()))
+                .andExpect(status().isOk());
     }
 
 }

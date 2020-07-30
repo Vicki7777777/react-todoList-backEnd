@@ -16,14 +16,15 @@ public class CompanyController {
     private CompanyService companyService;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping()
-    public List<Company> getCompanies(
-            @RequestParam(required = false, defaultValue = "1") Integer page,
-            @RequestParam(required = false, defaultValue = "5") Integer pageSize
+    @GetMapping(params = {"page", "pageSize"})
+    public List<Company> getCompanies(int page, int pageSize
     ) {
-        if (page != null && pageSize != null) {
-            return companyService.getCompanyByPage(page, pageSize);
-        }
+        return companyService.getCompanyByPage(page, pageSize);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping()
+    public List<Company> getCompanies() {
         return companyService.getAllCompanies();
     }
 
