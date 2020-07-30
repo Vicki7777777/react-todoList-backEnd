@@ -27,12 +27,6 @@ public class CompanyController {
         return companyService.getAllCompanies();
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public Company createCompany(@RequestBody Company company) {
-        return companyService.createCompany(company);
-    }
-
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public Company getCompany(@PathVariable Integer id) {
@@ -49,6 +43,13 @@ public class CompanyController {
     @PutMapping("/{id}")
     public Company updateCompany(@PathVariable int id, @RequestBody Company company) {
         return companyService.updateCompany(id, company);
+    }
+
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Company createCompany(@RequestBody Company company) {
+        return companyService.createCompany(company);
     }
 
     @ResponseStatus(HttpStatus.OK)

@@ -134,7 +134,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_updated_when_updata_employee_given_employee_message() {
+    void should_updated_when_update_employee_given_employee_message() {
         //given
         int companyId = 1;
         Company companyInfo = new Company(companyId, "HansOOCL2");
