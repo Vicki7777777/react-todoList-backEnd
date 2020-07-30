@@ -23,6 +23,15 @@ public class Company {
         this.employees = employees;
     }
 
+    public Company(String name,List<Employee> employees) {
+        this.companyName = name;
+        this.employees = employees;
+    }
+
+    public Company(int companyId, String name) {
+        this.companyName = name;
+        this.companyId = companyId; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

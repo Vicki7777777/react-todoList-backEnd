@@ -80,7 +80,7 @@ public class EmployeeServiceTest {
         given(employeeRepository.findAll(PageRequest.of(PAGE, PAGE_SIZE))).willReturn((PageImpl<Employee>) result);
 
         //when
-        Page<Employee> foundEmployees = employeeService.getEmployeeByPage(PAGE, PAGE_SIZE);
+        List<Employee> foundEmployees = employeeService.getEmployeeByPage(PAGE, PAGE_SIZE);
 
         //then
         assertEquals(result, foundEmployees);

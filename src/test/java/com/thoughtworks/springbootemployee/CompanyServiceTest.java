@@ -114,7 +114,7 @@ public class CompanyServiceTest {
         given(companyRepository.findAll(PageRequest.of(PAGE, PAGE_SIZE))).willReturn(result);
 
         //when
-        Page<Company> foundCompanies = companyService.getCompanyByPage(PAGE, PAGE_SIZE);
+        List<Company> foundCompanies = companyService.getCompanyByPage(PAGE, PAGE_SIZE);
 
         //then
         assertEquals(result, foundCompanies);
