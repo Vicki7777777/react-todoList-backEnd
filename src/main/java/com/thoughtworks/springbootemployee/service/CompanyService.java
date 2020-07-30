@@ -4,18 +4,16 @@ import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.respority.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
 public class CompanyService {
 
-/*    private Company company;*/
     @Autowired
     private CompanyRepository companyRepository;
 
@@ -32,12 +30,21 @@ public class CompanyService {
     }
 
     //TODO
-    public Page<Company> getCompanyByPage(int page, int pageSize) {
-        return companyRepository.findAll(PageRequest.of(page, pageSize));
+    public List<Company> getCompanyByPage(int page, int pageSize) {
+        return companyRepository.findAll(PageRequest.of(page-1, pageSize)).toList();
     }
 
     public Company createCompany(Company company) {
-        return companyRepository.save(company);
+        List<Employee> employees = company.getEmployees();
+        company.setEmployees(null);
+        company = companyRepository.save(company);
+        if (Objects.nonNull(employees)) {
+            int companyId = company.getCompanyId();
+            employees.forEach(employee -> employee.setCompanyId(companyId));
+            company.setEmployees(employees);
+            company = companyRepository.save(company);
+        }
+        return company;
     }
 
     public Company updateCompany(Integer companyId, Company companyInfo) {

@@ -7,15 +7,20 @@ import java.util.Objects;
 @Entity
 public class Company {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int companyId;
     private String companyName;
-    @OneToMany
+    //todo
+    @OneToMany(cascade = {CascadeType.ALL},mappedBy = "companyId")
     private List<Employee> employees;
 
-    public Company(int id, String name) {
+    public Company() {
+    }
+
+    public Company(int companyId, String name,List<Employee> employees) {
         this.companyName = name;
-        this.id = id;
+        this.companyId = companyId;
+        this.employees = employees;
     }
 
     @Override
@@ -23,14 +28,14 @@ public class Company {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Company company = (Company) o;
-        return id == company.id &&
+        return companyId == company.companyId &&
                 Objects.equals(companyName, company.companyName) &&
                 employees.equals(company.employees);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, companyName, employees);
+        return Objects.hash(companyId, companyName, employees);
     }
 
     public String getCompanyName() {
@@ -41,12 +46,12 @@ public class Company {
         this.companyName = companyName;
     }
 
-    public int getId() {
-        return id;
+    public int getCompanyId() {
+        return companyId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 
     public List<Employee> getEmployees() {

@@ -3,76 +3,55 @@ package com.thoughtworks.springbootemployee.controller;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
-    List<Employee> employees = new LinkedList<>();
 
     @Autowired
     private EmployeeService employeeService;
 
-    public EmployeeController() {
-        employees.add(new Employee(1, "Hans", 24, "male", 5000));
-        employees.add(new Employee(2, "Amy", 22,"female", 9000));
-        employees.add(new Employee(3, "Ray", 28,"male", 10000));
-        employees.add(new Employee(4, "Sky", 27,"female", 8000));
-        employees.add(new Employee(5, "Hovees", 25,"male", 7000));
-        employees.add(new Employee(6, "Mandy", 22,"male", 8888));
-        employees.add(new Employee(7, "Ace", 23,"male", 9000));
-    }
-
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<Employee> getEmployees(
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "5") int pageSize,
-            @RequestParam(required = false, defaultValue = "") String gender) {
-        List<Employee> employeesList = new LinkedList<>();
-
-        if (page == 0 && gender.equals("")) {
-            employeesList = employeeService.getAllEmployees();
-        } else if (!gender.equals("")) {
-            employeesList = employeeService.getEmployeeByGender(gender);
-        } else if (page > 0) {
-            employeesList = (List<Employee>) employeeService.getEmployeeByPage(page, pageSize);
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        if (page != null && pageSize != null) {
+            return employeeService.getEmployeeByPage(page, pageSize);
         }
+        return employeeService.getAllEmployees();
 
-        return employeesList;
     }
 
-    private List<Employee> getEmployeesByGender(String gender) {
-        List<Employee> employeesList = new LinkedList<>();
-        for (Employee employee : employees) {
-            if (employee.getGender().equals(gender)) {
-                employeesList.add(employee);
-            }
-        }
-        return employeesList;
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(params = "gender")
+    private List<Employee> getEmployeesByGender(@RequestParam(required = false, defaultValue = "") String gender) {
+        return employeeService.getEmployeeByGender(gender);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void addEmployee(@RequestBody Employee employee) {
-        employeeService.createEmployee(employee);
+    public Employee addEmployee(@RequestBody Employee employee) {
+        return employeeService.createEmployee(employee);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public Employee updateEmployee(@PathVariable int id, @RequestBody Employee employee) {
         return employeeService.updateEmployee(id, employee);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
-    public String deleteEmployee(@PathVariable int id) {
+    public void deleteEmployee(@PathVariable int id) {
         employeeService.removeEmployee(id);
-        if(employeeService.getEmployeeById(id) == null) {
-            return "Delete Employee id = " + id + " Success";
-        }
-        return "Delete Unsuccess";
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public Employee getEmployeeById(@PathVariable int id) {
         return employeeService.getEmployeeById(id);
