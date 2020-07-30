@@ -1,7 +1,6 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.model.Employee;
-import com.thoughtworks.springbootemployee.respority.EmployeeRepository;
 import com.thoughtworks.springbootemployee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +61,7 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     public Employee updateEmployee(@PathVariable int id, @RequestBody Employee employee) {
-        return employeeService.updataEmployee(id, employee);
+        return employeeService.updateEmployee(id, employee);
     }
 
     @DeleteMapping("/{id}")

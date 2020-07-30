@@ -38,7 +38,7 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
-    public Employee updataEmployee(Integer id, Employee employeeInfo) {
+    public Employee updateEmployee(Integer id, Employee employeeInfo) {
         Employee employee = getEmployeeById(id);
         employee.setAge(employeeInfo.getAge());
         employee.setGender(employeeInfo.getGender());

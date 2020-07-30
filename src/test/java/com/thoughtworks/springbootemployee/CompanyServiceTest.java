@@ -104,14 +104,14 @@ public class CompanyServiceTest {
             assertEquals(expectedCompany.getEmployees().get(i), employees.get(i));
         };
     }
-
+    //todo
     @Test
     void should_return_specific_company_when_get_company_given_page_pageSize() {
         //given
         int PAGE = 1;
         int PAGE_SIZE = 5;
-        PageImpl<Company> result = new PageImpl<>(companies.subList(0, 4));
-        given(companyRepository.findAll(PageRequest.of(PAGE, PAGE_SIZE))).willReturn((PageImpl<Company>) result);
+        Page<Company> result = new PageImpl<>(companies.subList(0, 4));
+        given(companyRepository.findAll(PageRequest.of(PAGE, PAGE_SIZE))).willReturn(result);
 
         //when
         Page<Company> foundCompanies = companyService.getCompanyByPage(PAGE, PAGE_SIZE);

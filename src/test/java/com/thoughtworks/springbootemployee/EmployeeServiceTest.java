@@ -119,11 +119,11 @@ public class EmployeeServiceTest {
         //given
         Employee employeeInfo = new Employee(1, "Hans", 29, "female", 50000);
         Integer employeeId = 1;
-        given(employeeRepository.findById(employeeId)).willReturn(java.util.Optional.ofNullable(employeeInfo));
+        given(employeeRepository.findById(employeeId)).willReturn(Optional.of(employeeInfo));
         given(employeeRepository.save(employeeInfo)).willReturn(employeeInfo);
 
         //when
-        Employee employee = employeeService.updataEmployee(employeeId, employeeInfo);
+        Employee employee = employeeService.updateEmployee(employeeId, employeeInfo);
 
         //then
         assertEquals(employee, employeeInfo);

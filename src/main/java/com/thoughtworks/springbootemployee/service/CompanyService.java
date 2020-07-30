@@ -4,6 +4,7 @@ import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.respority.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,8 +31,9 @@ public class CompanyService {
         return getCompanyById(id).getEmployees();
     }
 
-    public PageImpl<Company> getCompanyByPage(int page, int pageSize) {
-        return (PageImpl<Company>) companyRepository.findAll(PageRequest.of(page, pageSize));
+    //TODO
+    public Page<Company> getCompanyByPage(int page, int pageSize) {
+        return companyRepository.findAll(PageRequest.of(page, pageSize));
     }
 
     public Company createCompany(Company company) {
