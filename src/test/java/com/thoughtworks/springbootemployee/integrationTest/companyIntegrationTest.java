@@ -61,6 +61,5 @@ public class companyIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/companies/{id}",savedCompany.getCompanyId()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.companyName").value("jessie"));
-//                .andExpect(jsonPath("$.[0].employees.[0].name").value("Hans"));
     }
 }
