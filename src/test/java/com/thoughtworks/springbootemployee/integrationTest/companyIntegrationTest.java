@@ -5,7 +5,6 @@ import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.respority.CompanyRepository;
 import com.thoughtworks.springbootemployee.respority.EmployeeRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,9 +79,10 @@ public class companyIntegrationTest {
 
     @Test
     void should_return_companies_when_hit_get_companies_endpoint_given_nothing() throws Exception {
+        //todo
         mockMvc.perform(get("/companies"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].companyName").value(company1.getCompanyName()))
+                .andExpect(jsonPath("$",hasSize(5)))
                 .andExpect(jsonPath("$[1].companyName").value(company2.getCompanyName()));
     }
 

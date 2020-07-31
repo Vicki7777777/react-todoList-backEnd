@@ -1,0 +1,6 @@
+--create table company(
+--    companyId INT AUTO_INCREMENT,
+--    companyName VARCHAR(255),
+--    gender VARCHAR(255),
+--    PRIMARY KEY (companyId)
+--);
