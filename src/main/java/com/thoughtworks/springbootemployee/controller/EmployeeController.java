@@ -15,16 +15,16 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<Employee> getEmployees(
-            @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize) {
         if (page != null && pageSize != null) {
             return employeeService.getEmployeeByPage(page, pageSize);
         }
         return employeeService.getAllEmployees();
-
     }
 
     @ResponseStatus(HttpStatus.OK)

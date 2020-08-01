@@ -82,7 +82,6 @@ public class companyIntegrationTest {
 
     @Test
     void should_return_companies_when_hit_get_companies_endpoint_given_nothing() throws Exception {
-        //todo
         mockMvc.perform(get("/companies"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$",hasSize(5)))
@@ -119,7 +118,7 @@ public class companyIntegrationTest {
     }
 
     @Test
-    void should_return_employees_when_get_employees_by_page_given_page_and_page_size() throws Exception {
+    void should_return_companies_when_get_companies_by_page_given_page_and_page_size() throws Exception {
         mockMvc.perform(get("/companies?page=1&pageSize=5").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(5)))
