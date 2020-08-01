@@ -4,13 +4,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import com.thoughtworks.springbootemployee.Exception.CreateException;
+import com.thoughtworks.springbootemployee.Exception.FindException;
+import com.thoughtworks.springbootemployee.Exception.UpdateException;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.respority.CompanyRepository;
-import com.thoughtworks.springbootemployee.respority.EmployeeRepository;
 import com.thoughtworks.springbootemployee.service.CompanyService;
-import com.thoughtworks.springbootemployee.service.EmployeeService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -25,6 +27,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
@@ -87,7 +90,7 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_return_specific_company_employees_when_get_company_given_id() {
+    void should_return_specific_company_employees_when_get_company_given_id() throws FindException {
         //given
         Integer id = 1;
         Company expectedCompany = companies.get(0);
@@ -104,6 +107,60 @@ public class CompanyServiceTest {
             assertEquals(expectedCompany.getEmployees().get(i), employees.get(i));
         };
     }
+    @Test
+    void should_return_wrong_message_when_find_specific_company_employees_given_non_existent_id() throws FindException {
+        //given
+        Integer id = 100000;
+        when(companyRepository.findById(id)).thenReturn(Optional.empty());
+        //when
+        Throwable exception = assertThrows(FindException.class,
+                () -> companyService.getCompanyEmployeesById(id));
+        //then
+        assertEquals(new FindException("No Such Company!").getMessage(),exception.getMessage());
+
+    }
+
+    @Test
+    void should_return_wrong_message_when_create_company_given_existent_companyId() throws CreateException {
+        //given
+        Company company = new Company(20, "HansOOCL");
+        Integer id = 20;
+        given(companyRepository.findById(id)).willReturn(Optional.of(company));
+        //when
+        Throwable exception = assertThrows(CreateException.class,
+                () -> companyService.createCompany(id,company));
+        //then
+        assertEquals(new FindException("Create unsuccessfully!").getMessage(),exception.getMessage());
+
+    }
+
+    @Test
+    void should_return_wrong_message_when_delete_company_given_non_existent_companyId() throws FindException {
+        //given
+        Integer id = 100000;
+        when(companyRepository.findById(id)).thenReturn(Optional.empty());
+        //when
+        Throwable exception = assertThrows(FindException.class,
+                () -> companyService.removeCompany(id));
+        //then
+        assertEquals(new FindException("No Such Company!").getMessage(),exception.getMessage());
+
+    }
+
+    @Test
+    void should_return_wrong_message_when_update_company_given_error_companyId()  throws UpdateException{
+        //given
+        Company company = new Company(20, "HansOOCL");
+        Integer id = 21;
+        //when
+        Throwable exception = assertThrows(UpdateException.class,
+                () -> companyService.updateCompany(id,company));
+        //then
+        assertEquals(new UpdateException("Update unsuccessfully!").getMessage(),exception.getMessage());
+
+    }
+
+
     //todo
     @Test
     void should_return_specific_company_when_get_company_given_page_pageSize() {
@@ -114,27 +171,27 @@ public class CompanyServiceTest {
         given(companyRepository.findAll(PageRequest.of(PAGE, PAGE_SIZE))).willReturn(result);
 
         //when
-        List<Company> foundCompanies = companyService.getCompanyByPage(PAGE, PAGE_SIZE);
+        List<Company> foundCompanies = companyService.getCompanyByPage(PAGE+1, PAGE_SIZE);
 
         //then
-        assertEquals(result, foundCompanies);
+        assertEquals(result.toList(), foundCompanies);
     }
 
     @Test
-    void should_new_company_when_add_company_given_one_company() {
+    void should_new_company_when_add_company_given_one_company() throws CreateException {
         //given
         Company company = new Company(20, "HansOOCL");
         given(companyRepository.save(company)).willReturn(company);
 
         //when
-        Company createdCompany = companyService.createCompany(company);
+        Company createdCompany = companyService.createCompany(20,company);
 
         //then
         assertEquals(company, createdCompany);
     }
 
     @Test
-    void should_updated_when_update_employee_given_employee_message() {
+    void should_updated_when_update_employee_given_employee_message() throws UpdateException {
         //given
         int companyId = 1;
         Company companyInfo = new Company(companyId, "HansOOCL2");
@@ -152,11 +209,11 @@ public class CompanyServiceTest {
     }
 
     @Test
-    void should_delete_employee_when_remove_employee_given_id() {
+    void should_delete_employee_when_remove_employee_given_id() throws CreateException, FindException {
         //given
-        Integer companyId = 20;
+        Integer companyId = 25;
         Company expectedCompany = new Company(25, "VickiOOCL");
-        companyService.createCompany(expectedCompany);
+        companyService.createCompany(25,expectedCompany);
 
         //when
         Boolean result = companyService.removeCompany(companyId);

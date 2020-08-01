@@ -1,5 +1,8 @@
 package com.thoughtworks.springbootemployee.controller;
 
+import com.thoughtworks.springbootemployee.Exception.CreateException;
+import com.thoughtworks.springbootemployee.Exception.FindException;
+import com.thoughtworks.springbootemployee.Exception.UpdateException;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.service.CompanyService;
@@ -36,26 +39,26 @@ public class CompanyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}/employees")
-    public List<Employee> getAllEmployees(@PathVariable int id) {
+    public List<Employee> getAllEmployees(@PathVariable Integer id) throws FindException {
         return companyService.getCompanyEmployeesById(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
-    public Company updateCompany(@PathVariable int id, @RequestBody Company company) {
+    public Company updateCompany(@PathVariable int id, @RequestBody Company company) throws UpdateException {
         return companyService.updateCompany(id, company);
     }
 
 
-    @PostMapping
+    @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Company createCompany(@RequestBody Company company) {
-        return companyService.createCompany(company);
+    public Company createCompany(@PathVariable int id,@RequestBody Company company) throws CreateException {
+        return companyService.createCompany(id,company);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
-    public void deleteAllEmployees(@PathVariable int id) {
+    public void deleteAllEmployees(@PathVariable int id) throws FindException {
         companyService.removeCompany(id);
     }
 }
