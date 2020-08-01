@@ -1,5 +1,8 @@
 package com.thoughtworks.springbootemployee.service;
 
+import com.thoughtworks.springbootemployee.Exception.CreateException;
+import com.thoughtworks.springbootemployee.Exception.FindException;
+import com.thoughtworks.springbootemployee.Exception.UpdateException;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.respority.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +37,17 @@ public class EmployeeService {
         return employeeRepository.findByGender(gender);
     }
 
-    public Employee createEmployee(Employee employee) {
-        return employeeRepository.save(employee);
+    public Employee createEmployee(Employee employee) throws CreateException {
+        if(getEmployeeById(employee.getId()) == null){
+            return employeeRepository.save(employee);
+        }
+        throw new CreateException("Create unsuccessfully!");
     }
 
-    public Employee updateEmployee(Integer id, Employee employeeInfo) {
+    public Employee updateEmployee(Integer id, Employee employeeInfo) throws UpdateException {
+        if(id != employeeInfo.getId()){
+            throw new UpdateException("Update unsuccessfully!");
+        }
         Employee employee = getEmployeeById(id);
         employee.setAge(employeeInfo.getAge());
         employee.setGender(employeeInfo.getGender());
@@ -47,7 +56,10 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
-    public Boolean removeEmployee(Integer employeeId) {
+    public Boolean removeEmployee(Integer employeeId) throws FindException {
+        if(getEmployeeById(employeeId) == null){
+            throw new FindException("No Such Company!");
+        }
         employeeRepository.deleteById(employeeId);
         return getEmployeeById(employeeId) == null;
     }

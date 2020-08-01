@@ -140,9 +140,9 @@ public class companyIntegrationTest {
         //given
         String companyBody = "{\n" +
                 "        \"companyName\": 1,\n" +
-                "         \"companyId\":1\n" +
+                "         \"companyId\":1000\n" +
                 "}";
-        mockMvc.perform(post("/companies").contentType(MediaType.APPLICATION_JSON).content(companyBody))
+        mockMvc.perform(post("/companies/").contentType(MediaType.APPLICATION_JSON).content(companyBody))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.companyName").value("1"));
     }
@@ -151,11 +151,9 @@ public class companyIntegrationTest {
     @Test
     void should_updated_when_update_employee_given_employee_message() throws Exception {
         //given
-        String companyBody = "{\n" +
-                "        \"companyName\": 1,\n" +
-                "         \"companyId\":1\n" +
-                "}";
-        mockMvc.perform(put("/companies/"+company1.getCompanyId()).contentType(MediaType.APPLICATION_JSON).content(companyBody))
+        mockMvc.perform(put("/companies/{id}",company1.getCompanyId()).contentType(MediaType.APPLICATION_JSON)
+                .content(String.format("{ \"companyId\": %s, \"companyName\": \"1\" }",
+                        company1.getCompanyId())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.companyName").value("1"));
     }

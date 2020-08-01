@@ -2,9 +2,10 @@ package com.thoughtworks.springbootemployee;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 import com.thoughtworks.springbootemployee.Exception.CreateException;
 import com.thoughtworks.springbootemployee.Exception.FindException;
@@ -128,7 +129,7 @@ public class CompanyServiceTest {
         given(companyRepository.findById(id)).willReturn(Optional.of(company));
         //when
         Throwable exception = assertThrows(CreateException.class,
-                () -> companyService.createCompany(id,company));
+                () -> companyService.createCompany(company));
         //then
         assertEquals(new FindException("Create unsuccessfully!").getMessage(),exception.getMessage());
 
@@ -184,7 +185,7 @@ public class CompanyServiceTest {
         given(companyRepository.save(company)).willReturn(company);
 
         //when
-        Company createdCompany = companyService.createCompany(20,company);
+        Company createdCompany = companyService.createCompany(company);
 
         //then
         assertEquals(company, createdCompany);
@@ -213,12 +214,11 @@ public class CompanyServiceTest {
         //given
         Integer companyId = 25;
         Company expectedCompany = new Company(25, "VickiOOCL");
-        companyService.createCompany(25,expectedCompany);
-
+        given(companyRepository.findById(companyId)).willReturn(Optional.of(expectedCompany));
         //when
-        Boolean result = companyService.removeCompany(companyId);
+        companyService.removeCompany(companyId);
 
         //then
-        assertTrue(result);
+        verify(companyRepository, times(1)).deleteById(eq(companyId));
     }
 }

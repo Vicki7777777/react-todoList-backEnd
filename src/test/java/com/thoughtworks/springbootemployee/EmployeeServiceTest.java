@@ -1,10 +1,12 @@
 package com.thoughtworks.springbootemployee;
 
+import com.thoughtworks.springbootemployee.Exception.CreateException;
+import com.thoughtworks.springbootemployee.Exception.FindException;
+import com.thoughtworks.springbootemployee.Exception.UpdateException;
+import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.respority.EmployeeRepository;
 import com.thoughtworks.springbootemployee.service.EmployeeService;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,8 +22,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
@@ -76,14 +80,14 @@ public class EmployeeServiceTest {
         //given
         int PAGE = 1;
         int PAGE_SIZE = 5;
-        PageImpl<Employee> result = new PageImpl<>(employees.subList(0, 4));
-        given(employeeRepository.findAll(PageRequest.of(PAGE, PAGE_SIZE))).willReturn((PageImpl<Employee>) result);
+        Page<Employee> result = new PageImpl<>(employees.subList(0, 4));
+        given(employeeRepository.findAll(PageRequest.of(PAGE, PAGE_SIZE))).willReturn((Page<Employee>) result);
 
         //when
-        List<Employee> foundEmployees = employeeService.getEmployeeByPage(PAGE, PAGE_SIZE);
+        List<Employee> foundEmployees = employeeService.getEmployeeByPage(PAGE+1, PAGE_SIZE);
 
         //then
-        assertEquals(result, foundEmployees);
+        assertEquals(result.toList(), foundEmployees);
     }
 
     @Test
@@ -102,7 +106,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    void should_add_employee_when_create_employee_given_employee() {
+    void should_add_employee_when_create_employee_given_employee() throws CreateException {
         //given
         Employee expectedEmployee = new Employee(8, "Ace", 23, "male", 9900);
         given(employeeRepository.save(expectedEmployee)).willReturn(expectedEmployee);
@@ -115,7 +119,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    void should_updated_when_updata_employee_given_employee_message() {
+    void should_updated_when_update_employee_given_employee_message() throws UpdateException {
         //given
         Employee employeeInfo = new Employee(1, "Hans", 29, "female", 50000);
         Integer employeeId = 1;
@@ -130,16 +134,55 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    void should_delete_employee_when_remove_employee_given_id() {
+    void should_delete_employee_when_remove_employee_given_id() throws CreateException, FindException {
         //given
-        Integer employeeId = 20;
-        Employee expectedEmployees = new Employee(20, "Ace", 23, "male", 9900);
-        employeeService.createEmployee(expectedEmployees);
-
+        int employeeId = 20;
+        Employee expectedEmployees = new Employee(20, "cc", 23, "male", 9900);
+        given(employeeRepository.findById(employeeId)).willReturn(Optional.of(expectedEmployees));
         //when
-        Boolean result = employeeService.removeEmployee(employeeId);
-
+        employeeService.removeEmployee(employeeId);
         //then
-        assertTrue(result);
+        verify(employeeRepository, times(1)).deleteById(eq(employeeId));
     }
+
+    @Test
+    void should_return_wrong_message_when_create_employee_given_existent_employeeId() throws CreateException {
+        //given
+        Employee employee = new Employee(8, "cc", 23, "male", 9000);
+        int id = 8;
+        given(employeeRepository.findById(id)).willReturn(Optional.of(employee));
+        //when
+        Throwable exception = assertThrows(CreateException.class,
+                () -> employeeService.createEmployee(employee));
+        //then
+        assertEquals(new FindException("Create unsuccessfully!").getMessage(),exception.getMessage());
+
+    }
+
+    @Test
+    void should_return_wrong_message_when_delete_employee_given_non_existent_employeeId() throws FindException {
+        //given
+        Integer id = 100000;
+        when(employeeRepository.findById(id)).thenReturn(Optional.empty());
+        //when
+        Throwable exception = assertThrows(FindException.class,
+                () -> employeeService.removeEmployee(id));
+        //then
+        assertEquals(new FindException("No Such Company!").getMessage(),exception.getMessage());
+
+    }
+
+    @Test
+    void should_return_wrong_message_when_update_employee_given_error_employeeId()  throws UpdateException {
+        //given
+        Employee employee = new Employee(8, "cc", 23, "male", 9000);
+        Integer id = 21;
+        //when
+        Throwable exception = assertThrows(UpdateException.class,
+                () -> employeeService.updateEmployee(id,employee));
+        //then
+        assertEquals(new UpdateException("Update unsuccessfully!").getMessage(),exception.getMessage());
+
+    }
+
 }

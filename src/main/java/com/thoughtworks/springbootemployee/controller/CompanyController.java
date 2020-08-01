@@ -26,7 +26,7 @@ public class CompanyController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping()
+    @GetMapping
     public List<Company> getCompanies() {
         return companyService.getAllCompanies();
     }
@@ -50,10 +50,10 @@ public class CompanyController {
     }
 
 
-    @PostMapping("/{id}")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Company createCompany(@PathVariable int id,@RequestBody Company company) throws CreateException {
-        return companyService.createCompany(id,company);
+    public Company createCompany(@RequestBody Company company) throws CreateException {
+        return companyService.createCompany(company);
     }
 
     @ResponseStatus(HttpStatus.OK)

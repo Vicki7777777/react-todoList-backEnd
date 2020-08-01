@@ -1,5 +1,8 @@
 package com.thoughtworks.springbootemployee.controller;
 
+import com.thoughtworks.springbootemployee.Exception.CreateException;
+import com.thoughtworks.springbootemployee.Exception.FindException;
+import com.thoughtworks.springbootemployee.Exception.UpdateException;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,19 +38,19 @@ public class EmployeeController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Employee addEmployee(@RequestBody Employee employee) {
+    public Employee addEmployee(@RequestBody Employee employee) throws CreateException {
         return employeeService.createEmployee(employee);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable int id, @RequestBody Employee employee) {
+    public Employee updateEmployee(@PathVariable int id, @RequestBody Employee employee) throws UpdateException {
         return employeeService.updateEmployee(id, employee);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable int id) {
+    public void deleteEmployee(@PathVariable int id) throws FindException {
         employeeService.removeEmployee(id);
     }
 

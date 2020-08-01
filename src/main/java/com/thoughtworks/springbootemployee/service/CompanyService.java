@@ -39,8 +39,8 @@ public class CompanyService {
         return companyRepository.findAll(PageRequest.of(page-1, pageSize)).toList();
     }
 
-    public Company createCompany(int id,Company company) throws CreateException {
-        if(getCompanyById(id) == null){
+    public Company createCompany(Company company) throws CreateException {
+        if(getCompanyById(company.getCompanyId()) == null){
             List<Employee> employees = company.getEmployees();
             company.setEmployees(null);
             company = companyRepository.save(company);

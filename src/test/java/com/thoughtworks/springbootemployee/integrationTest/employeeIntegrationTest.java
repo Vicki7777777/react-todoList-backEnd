@@ -131,23 +131,21 @@ public class employeeIntegrationTest {
         //when
         mockMvc.perform(post("/employees/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{ \"name\": \"test\", \"age\": 18, \"gender\": \"male\", \"salary\": 800000, \"companyId\": %s }",
-                        company1.getCompanyId())))
+                .content(String.format("{ \"id\": \"1000\",\"name\": \"test\", \"age\": 18, \"gender\": \"male\", \"salary\": 800000 ,\"companyId\": %s}",company1.getCompanyId())))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.name").value("test"))
                 .andExpect(jsonPath("$.gender").value("male"))
                 .andExpect(jsonPath("$.age").value(18))
-                .andExpect(jsonPath("$.salary").value(800000))
-                .andExpect(jsonPath("$.companyId").value(company1.getCompanyId()));
+                .andExpect(jsonPath("$.salary").value(800000));
     }
     @Test
-    void should_updated_when_updata_employee_given_employee_message() throws Exception {
+    void should_updated_when_update_employee_given_employee_message() throws Exception {
         //when
         mockMvc.perform(put("/employees/{id}", employee1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{ \"name\": \"test\", \"age\": 18, \"gender\": \"male\", \"salary\": 800000, \"companyId\": %s }",
-                        company1.getCompanyId())))
+                .content(String.format("{ \"id\": \"%s\",\"name\": \"test\", \"age\": 18, \"gender\": \"male\", \"salary\": 800000, \"companyId\": %s }",
+                        employee1.getId(),employee1.getCompanyId())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(employee1.getId()))
                 .andExpect(jsonPath("$.name").value("test"))
