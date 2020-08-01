@@ -13,6 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -83,14 +86,25 @@ public class companyIntegrationTest {
         mockMvc.perform(get("/companies"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$",hasSize(5)))
-                .andExpect(jsonPath("$[1].companyName").value(company2.getCompanyName()));
+                .andExpect(jsonPath("$[1].companyName").value(company2.getCompanyName()))
+                .andExpect(jsonPath("$[1].employees[0].id").value(employee3.getId()))
+                .andExpect(jsonPath("$[1].employees[0].name").value(employee3.getName()))
+                .andExpect(jsonPath("$[1].employees[0].gender").value(employee3.getGender()))
+                .andExpect(jsonPath("$[1].employees[0].age").value(employee3.getAge()))
+                .andExpect(jsonPath("$[1].employees[0].companyId").value(employee3.getCompanyId()));
     }
 
     @Test
     void should_return_specific_company_when_hit_get_companies_endpoint_given_company_id() throws Exception {
         mockMvc.perform(get("/companies/{id}", company1.getCompanyId()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.companyName").value(company1.getCompanyName()));
+                .andExpect(jsonPath("$.employees",hasSize(2)))
+                .andExpect(jsonPath("$.companyName").value(company1.getCompanyName()))
+                .andExpect(jsonPath("$.employees[0].id").value(employee1.getId()))
+                .andExpect(jsonPath("$.employees[0].name").value(employee1.getName()))
+                .andExpect(jsonPath("$.employees[0].gender").value(employee1.getGender()))
+                .andExpect(jsonPath("$.employees[0].age").value(employee1.getAge()))
+                .andExpect(jsonPath("$.employees[0].companyId").value(employee1.getCompanyId()));
     }
 
     @Test
@@ -113,7 +127,13 @@ public class companyIntegrationTest {
                 .andExpect(jsonPath("$[1].companyName").value(company2.getCompanyName()))
                 .andExpect(jsonPath("$[2].companyName").value(company3.getCompanyName()))
                 .andExpect(jsonPath("$[3].companyName").value(company4.getCompanyName()))
-                .andExpect(jsonPath("$[4].companyName").value(company5.getCompanyName()));
+                .andExpect(jsonPath("$[4].companyName").value(company5.getCompanyName()))
+                .andExpect(jsonPath("$[0].employees[0].id").value(employee1.getId()))
+                .andExpect(jsonPath("$[0].employees[0].name").value(employee1.getName()))
+                .andExpect(jsonPath("$[0].employees[0].gender").value(employee1.getGender()))
+                .andExpect(jsonPath("$[0].employees[0].age").value(employee1.getAge()))
+                .andExpect(jsonPath("$[0].employees[0].salary").value(employee1.getSalary()))
+                .andExpect(jsonPath("$[0].employees[0].companyId").value(employee1.getCompanyId()));
     }
 
     @Test
@@ -125,7 +145,7 @@ public class companyIntegrationTest {
                 "}";
         mockMvc.perform(post("/companies").contentType(MediaType.APPLICATION_JSON).content(companyBody))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.companyId").isNumber());
+                .andExpect(jsonPath("$.companyName").value("1"));
     }
 
 
@@ -137,7 +157,8 @@ public class companyIntegrationTest {
                 "         \"companyId\":1\n" +
                 "}";
         mockMvc.perform(put("/companies/"+company1.getCompanyId()).contentType(MediaType.APPLICATION_JSON).content(companyBody))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.companyName").value("1"));
     }
 
     @Test
