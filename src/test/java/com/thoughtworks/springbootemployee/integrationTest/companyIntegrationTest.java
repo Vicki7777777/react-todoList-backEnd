@@ -139,8 +139,8 @@ public class companyIntegrationTest {
     void should_new_company_when_add_company_given_one_company() throws Exception {
         //given
         String companyBody = "{\n" +
-                "        \"companyName\": 1,\n" +
-                "         \"companyId\":1000\n" +
+                "        \"company_Name\": 1,\n" +
+                "         \"company_Id\":1000\n" +
                 "}";
         mockMvc.perform(post("/companies/").contentType(MediaType.APPLICATION_JSON).content(companyBody))
                 .andExpect(status().isCreated())
@@ -152,7 +152,7 @@ public class companyIntegrationTest {
     void should_updated_when_update_employee_given_employee_message() throws Exception {
         //given
         mockMvc.perform(put("/companies/{id}",company1.getCompanyId()).contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{ \"companyId\": %s, \"companyName\": \"1\" }",
+                .content(String.format("{ \"company_Id\": %s, \"company_Name\": \"1\" }",
                         company1.getCompanyId())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.companyName").value("1"));

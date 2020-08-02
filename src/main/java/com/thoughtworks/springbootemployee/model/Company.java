@@ -38,8 +38,7 @@ public class Company {
         if (o == null || getClass() != o.getClass()) return false;
         Company company = (Company) o;
         return companyId == company.companyId &&
-                Objects.equals(companyName, company.companyName) &&
-                employees.equals(company.employees);
+                Objects.equals(companyName, company.companyName);
     }
 
     @Override

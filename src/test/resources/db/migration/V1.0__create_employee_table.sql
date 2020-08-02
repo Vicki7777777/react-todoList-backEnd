@@ -4,15 +4,13 @@ create table company(
     PRIMARY KEY (company_Id)
 );
 
-
-
---create table employee(
---    id INT AUTO_INCREMENT,
---    name VARCHAR(255),
---    gender VARCHAR(255),
---    age INT,
---    salary INT,
---    companyId INT,
---    PRIMARY KEY (id),
---    FOREIGN KEY (companyId) REFERENCES company(companyId)
---);
+create table employee(
+    id INT AUTO_INCREMENT,
+    name VARCHAR(255),
+    gender VARCHAR(255),
+    age INT,
+    salary INT,
+    company_Id INT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (company_Id) REFERENCES company(company_Id)
+);

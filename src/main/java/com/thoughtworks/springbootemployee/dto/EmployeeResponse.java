@@ -1,10 +1,6 @@
 package com.thoughtworks.springbootemployee.dto;
 
-import com.thoughtworks.springbootemployee.model.Employee;
-
-import java.util.List;
-
-public class EmployeeRequest {
+public class EmployeeResponse {
     private int id;
     private String name;
     private int age;
@@ -12,7 +8,7 @@ public class EmployeeRequest {
     private int salary;
     private int companyId;
 
-    public EmployeeRequest(int id,String name,int age,String gender,int salary,int companyId){
+    public EmployeeResponse(int id, String name, int age, String gender, int salary, int companyId) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -20,15 +16,6 @@ public class EmployeeRequest {
         this.salary = salary;
         this.companyId = companyId;
     }
-
-    public EmployeeRequest(int id, String name, int age, String gender, int salary) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.gender = gender;
-        this.salary = salary;
-    }
-
     public int getId() {
         return id;
     }
@@ -76,5 +63,6 @@ public class EmployeeRequest {
     public void setCompanyId(int companyId) {
         this.companyId = companyId;
     }
+
 
 }

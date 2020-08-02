@@ -3,6 +3,8 @@ package com.thoughtworks.springbootemployee.controller;
 import com.thoughtworks.springbootemployee.Exception.CreateException;
 import com.thoughtworks.springbootemployee.Exception.FindException;
 import com.thoughtworks.springbootemployee.Exception.UpdateException;
+import com.thoughtworks.springbootemployee.dto.EmployeeRequest;
+import com.thoughtworks.springbootemployee.dto.EmployeeResponse;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ public class EmployeeController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<Employee> getEmployees(
+    public List<EmployeeResponse> getEmployees(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize) {
         if (page != null && pageSize != null) {
@@ -32,31 +34,31 @@ public class EmployeeController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(params = "gender")
-    private List<Employee> getEmployeesByGender(@RequestParam(required = false, defaultValue = "") String gender) {
+    private List<EmployeeResponse> getEmployeesByGender(@RequestParam(required = false, defaultValue = "") String gender) {
         return employeeService.getEmployeeByGender(gender);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Employee addEmployee(@RequestBody Employee employee) throws CreateException {
-        return employeeService.createEmployee(employee);
+    public EmployeeResponse addEmployee(@RequestBody EmployeeRequest employeeRequest) throws CreateException {
+        return employeeService.createEmployee(employeeRequest);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable int id, @RequestBody Employee employee) throws UpdateException {
-        return employeeService.updateEmployee(id, employee);
+    public EmployeeResponse updateEmployee(@PathVariable int id, @RequestBody EmployeeRequest employeeRequest) throws UpdateException {
+        return employeeService.updateEmployee(id, employeeRequest);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable int id) throws FindException {
-        employeeService.removeEmployee(id);
+    public boolean deleteEmployee(@PathVariable int id) throws FindException {
+        return employeeService.removeEmployee(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable int id) {
+    public EmployeeResponse getEmployeeById(@PathVariable int id) {
         return employeeService.getEmployeeById(id);
     }
 }

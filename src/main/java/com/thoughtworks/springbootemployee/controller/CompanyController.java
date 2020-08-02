@@ -3,6 +3,10 @@ package com.thoughtworks.springbootemployee.controller;
 import com.thoughtworks.springbootemployee.Exception.CreateException;
 import com.thoughtworks.springbootemployee.Exception.FindException;
 import com.thoughtworks.springbootemployee.Exception.UpdateException;
+import com.thoughtworks.springbootemployee.dto.CompanyRequest;
+import com.thoughtworks.springbootemployee.dto.CompanyResponse;
+import com.thoughtworks.springbootemployee.dto.EmployeeResponse;
+import com.thoughtworks.springbootemployee.mapper.CompanyMapper;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.service.CompanyService;
@@ -20,46 +24,46 @@ public class CompanyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(params = {"page", "pageSize"})
-    public List<Company> getCompanies(int page, int pageSize
+    public List<CompanyResponse> getCompanies(int page, int pageSize
     ) {
         return companyService.getCompanyByPage(page, pageSize);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<Company> getCompanies() {
+    public List<CompanyResponse> getCompanies() {
         return companyService.getAllCompanies();
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public Company getCompany(@PathVariable Integer id) {
+    public CompanyResponse getCompany(@PathVariable Integer id) throws FindException {
         return companyService.getCompanyById(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}/employees")
-    public List<Employee> getAllEmployees(@PathVariable Integer id) throws FindException {
+    public List<EmployeeResponse> getAllEmployees(@PathVariable Integer id) throws FindException {
         return companyService.getCompanyEmployeesById(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
-    public Company updateCompany(@PathVariable int id, @RequestBody Company company) throws UpdateException {
-        return companyService.updateCompany(id, company);
+    public CompanyResponse updateCompany(@PathVariable int id, @RequestBody CompanyRequest companyRequest) throws UpdateException {
+        return companyService.updateCompany(id, companyRequest);
     }
 
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Company createCompany(@RequestBody Company company) throws CreateException {
-        return companyService.createCompany(company);
+    public CompanyResponse createCompany(@RequestBody CompanyRequest companyRequest) throws CreateException, FindException {
+        return companyService.createCompany(companyRequest);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
-    public void deleteAllEmployees(@PathVariable int id) throws FindException {
-        companyService.removeCompany(id);
+    public boolean deleteAllEmployees(@PathVariable int id) throws FindException {
+        return companyService.removeCompany(id);
     }
 }
 

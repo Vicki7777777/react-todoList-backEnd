@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.mapper;
 
 import com.thoughtworks.springbootemployee.dto.EmployeeRequest;
+import com.thoughtworks.springbootemployee.dto.EmployeeResponse;
 import com.thoughtworks.springbootemployee.mapper.EmployeeMapper;
 import com.thoughtworks.springbootemployee.model.Employee;
 import org.junit.jupiter.api.Test;
@@ -30,13 +31,13 @@ public class EmployeeMapperTest {
         EmployeeMapper employeeMapper = new EmployeeMapper();
         Employee employee = new Employee(8, "cc", 23, "male", 10000,1);
         //when
-        EmployeeRequest employeeRequest = employeeMapper.toEmployeeRequest(employee);
+        EmployeeResponse employeeResponse = employeeMapper.toEmployeeResponse(employee);
         //then
-        assertEquals(employee.getId(),employeeRequest.getId());
-        assertEquals(employee.getAge(), employeeRequest.getAge());
-        assertEquals(employee.getCompanyId(), employeeRequest.getCompanyId());
-        assertEquals(employee.getGender(), employeeRequest.getGender());
-        assertEquals(employee.getName(), employeeRequest.getName());
-        assertEquals(employee.getSalary(), employeeRequest.getSalary());
+        assertEquals(employee.getId(),employeeResponse.getId());
+        assertEquals(employee.getAge(), employeeResponse.getAge());
+        assertEquals(employee.getCompanyId(), employeeResponse.getCompanyId());
+        assertEquals(employee.getGender(), employeeResponse.getGender());
+        assertEquals(employee.getName(), employeeResponse.getName());
+        assertEquals(employee.getSalary(), employeeResponse.getSalary());
     }
 }

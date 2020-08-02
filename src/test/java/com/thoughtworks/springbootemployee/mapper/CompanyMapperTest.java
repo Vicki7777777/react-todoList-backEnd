@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.mapper;
 
 import com.thoughtworks.springbootemployee.dto.CompanyRequest;
+import com.thoughtworks.springbootemployee.dto.CompanyResponse;
 import com.thoughtworks.springbootemployee.model.Company;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,14 +24,14 @@ public class CompanyMapperTest {
     }
 
     @Test
-    void should_get_companyRequest_when_mappe_given_company(){
+    void should_get_companyResponse_when_mapper_given_company(){
         //given
         CompanyMapper companyMapper = new CompanyMapper();
         Company company = new Company(8,"OOCL",emptyList());
         //when
-        CompanyRequest companyRequest = companyMapper.toCompanyRequest(company);
+        CompanyResponse companyResponse = companyMapper.toCompanyResponse(company);
         //then
-        assertEquals(company.getCompanyId(),companyRequest.getCompanyId());
-        assertEquals(company.getCompanyName(),companyRequest.getCompanyName());
+        assertEquals(company.getCompanyId(),companyResponse.getCompanyId());
+        assertEquals(company.getCompanyName(),companyResponse.getCompanyName());
     }
 }

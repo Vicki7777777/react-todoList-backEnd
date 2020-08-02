@@ -131,7 +131,7 @@ public class employeeIntegrationTest {
         //when
         mockMvc.perform(post("/employees/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{ \"id\": \"1000\",\"name\": \"test\", \"age\": 18, \"gender\": \"male\", \"salary\": 800000 ,\"companyId\": %s}",company1.getCompanyId())))
+                .content(String.format("{ \"id\": \"1000\",\"name\": \"test\", \"age\": 18, \"gender\": \"male\", \"salary\": 800000 ,\"company_Id\": %s}",company1.getCompanyId())))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.name").value("test"))
@@ -144,7 +144,7 @@ public class employeeIntegrationTest {
         //when
         mockMvc.perform(put("/employees/{id}", employee1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{ \"id\": \"%s\",\"name\": \"test\", \"age\": 18, \"gender\": \"male\", \"salary\": 800000, \"companyId\": %s }",
+                .content(String.format("{ \"id\": \"%s\",\"name\": \"test\", \"age\": 18, \"gender\": \"male\", \"salary\": 800000, \"company_Id\": %s }",
                         employee1.getId(),employee1.getCompanyId())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(employee1.getId()))

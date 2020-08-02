@@ -1,4 +1,4 @@
-package com.thoughtworks.springbootemployee;
+package com.thoughtworks.springbootemployee.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,6 +10,11 @@ import static org.mockito.Mockito.times;
 import com.thoughtworks.springbootemployee.Exception.CreateException;
 import com.thoughtworks.springbootemployee.Exception.FindException;
 import com.thoughtworks.springbootemployee.Exception.UpdateException;
+import com.thoughtworks.springbootemployee.dto.CompanyRequest;
+import com.thoughtworks.springbootemployee.dto.CompanyResponse;
+import com.thoughtworks.springbootemployee.dto.EmployeeResponse;
+import com.thoughtworks.springbootemployee.mapper.CompanyMapper;
+import com.thoughtworks.springbootemployee.mapper.EmployeeMapper;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.respority.CompanyRepository;
@@ -25,10 +30,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
@@ -40,6 +42,8 @@ public class CompanyServiceTest {
 
     @InjectMocks
     private CompanyService companyService;
+    private CompanyMapper companyMapper = new CompanyMapper();
+    private EmployeeMapper employeeMapper = new EmployeeMapper();
 
     @BeforeAll
     public void createCompanies() {
@@ -59,53 +63,63 @@ public class CompanyServiceTest {
             employees.add(new Employee(7, "Ace", 23, "male", 9000));
             company.setEmployees(employees);
         }
+
     }
 
-
     @Test
-    void should_return_companies_when_get_all_companyes_given_company_service() {
+    void should_return_companies_when_get_all_companies_given_company_service() {
         //given
         given(companyRepository.findAll()).willReturn(companies);
 
         //when
-        List<Company> companyList = companyService.getAllCompanies();
+        List<CompanyResponse> companyList = companyService.getAllCompanies();
 
         //then
         assertNotNull(companyList);
         assertEquals(companies.size(), companyList.size());
-        assertEquals(companies, companyList);
     }
 
     @Test
-    void should_return_specific_company_when_get_company_given_id() {
+    void should_return_specific_company_when_get_company_given_id() throws FindException {
         //given
         Integer id = 1;
-        Company expectedCompany = companies.get(0);
-        given(companyRepository.findById(id)).willReturn(java.util.Optional.ofNullable(expectedCompany));
+        CompanyResponse expectedCompany = companyMapper.toCompanyResponse(companies.get(0));
+        given(companyRepository.findById(id)).willReturn(Optional.ofNullable(companies.get(0)));
 
         //when
-        Company selectedCompany = companyService.getCompanyById(id);
+        CompanyResponse selectedCompany = companyService.getCompanyById(id);
 
         //then
-        assertEquals(expectedCompany, selectedCompany);
+        assertEquals(expectedCompany.getCompanyId(), selectedCompany.getCompanyId());
+        assertEquals(expectedCompany.getCompanyName(), selectedCompany.getCompanyName());
+        assertEquals(expectedCompany.getEmployees(), selectedCompany.getEmployees());
     }
 
     @Test
     void should_return_specific_company_employees_when_get_company_given_id() throws FindException {
         //given
         Integer id = 1;
-        Company expectedCompany = companies.get(0);
+        CompanyResponse expectedCompany = companyMapper.toCompanyResponse(companies.get(0));
         List<Employee> expectedEmployees = expectedCompany.getEmployees();
-        given(companyRepository.findById(id)).willReturn(java.util.Optional.of(expectedCompany));
+        List<EmployeeResponse> employeeResponses = new ArrayList<>();
+        for (Employee employee : expectedEmployees) {
+            employeeResponses.add(employeeMapper.toEmployeeResponse(employee));
+        }
+        given(companyRepository.findById(id)).willReturn(java.util.Optional.of(companies.get(0)));
 
         //when
-        List<Employee> employees = companyService.getCompanyEmployeesById(id);
+        List<EmployeeResponse> employees = companyService.getCompanyEmployeesById(id);
 
         //then
         assertNotNull(employees);
         assertEquals(expectedCompany.getEmployees().size(), employees.size());
         for (int i = 0; i < employees.size(); i++) {
-            assertEquals(expectedCompany.getEmployees().get(i), employees.get(i));
+            assertEquals(employeeResponses.get(i).getId(), employees.get(i).getId());
+            assertEquals(employeeResponses.get(i).getAge(), employees.get(i).getAge());
+            assertEquals(employeeResponses.get(i).getCompanyId(), employees.get(i).getCompanyId());
+            assertEquals(employeeResponses.get(i).getGender(), employees.get(i).getGender());
+            assertEquals(employeeResponses.get(i).getName(), employees.get(i).getName());
+            assertEquals(employeeResponses.get(i).getSalary(), employees.get(i).getSalary());
         };
     }
     @Test
@@ -124,12 +138,12 @@ public class CompanyServiceTest {
     @Test
     void should_return_wrong_message_when_create_company_given_existent_companyId() throws CreateException {
         //given
-        Company company = new Company(20, "HansOOCL");
+        CompanyRequest companyRequest = new CompanyRequest(20, "HansOOCL");
         Integer id = 20;
-        given(companyRepository.findById(id)).willReturn(Optional.of(company));
+        given(companyRepository.findById(id)).willReturn(Optional.of(companyMapper.toCompany(companyRequest)));
         //when
         Throwable exception = assertThrows(CreateException.class,
-                () -> companyService.createCompany(company));
+                () -> companyService.createCompany(companyRequest));
         //then
         assertEquals(new FindException("Create unsuccessfully!").getMessage(),exception.getMessage());
 
@@ -151,11 +165,11 @@ public class CompanyServiceTest {
     @Test
     void should_return_wrong_message_when_update_company_given_error_companyId()  throws UpdateException{
         //given
-        Company company = new Company(20, "HansOOCL");
+        CompanyRequest companyRequest = new CompanyRequest(20, "HansOOCL");
         Integer id = 21;
         //when
         Throwable exception = assertThrows(UpdateException.class,
-                () -> companyService.updateCompany(id,company));
+                () -> companyService.updateCompany(id,companyRequest));
         //then
         assertEquals(new UpdateException("Update unsuccessfully!").getMessage(),exception.getMessage());
 
@@ -168,45 +182,53 @@ public class CompanyServiceTest {
         //given
         int PAGE = 1;
         int PAGE_SIZE = 5;
-        Page<Company> result = new PageImpl<>(companies.subList(0, 4));
+        Page<Company> result = new PageImpl<>(companies.subList(0, 5));
         given(companyRepository.findAll(PageRequest.of(PAGE, PAGE_SIZE))).willReturn(result);
-
+        List<CompanyResponse> companyResponseTest = new ArrayList<>();
+        for (Company company : result.toList()) {
+            companyResponseTest.add(companyMapper.toCompanyResponse(company));
+        }
         //when
-        List<Company> foundCompanies = companyService.getCompanyByPage(PAGE+1, PAGE_SIZE);
+        List<CompanyResponse> foundCompanies = companyService.getCompanyByPage(PAGE+1, PAGE_SIZE);
 
         //then
-        assertEquals(result.toList(), foundCompanies);
+        assertNotNull(foundCompanies);
+        assertEquals(companyResponseTest.size(), foundCompanies.size());
+        assertEquals(companyResponseTest.get(0).getCompanyId(), foundCompanies.get(0).getCompanyId());
+        assertEquals(companyResponseTest.get(4).getCompanyId(), foundCompanies.get(4).getCompanyId());
     }
 
     @Test
     void should_new_company_when_add_company_given_one_company() throws CreateException {
         //given
-        Company company = new Company(20, "HansOOCL");
-        given(companyRepository.save(company)).willReturn(company);
-
+        CompanyRequest company = new CompanyRequest(20, "HansOOCL");
+        given(companyRepository.save(companyMapper.toCompany(company))).willReturn(companyMapper.toCompany(company));
         //when
-        Company createdCompany = companyService.createCompany(company);
-
+        CompanyResponse createdCompany = companyService.createCompany(company);
         //then
-        assertEquals(company, createdCompany);
+        assertEquals(companyMapper.toCompanyResponse(companyMapper.toCompany(company)).getCompanyId(), createdCompany.getCompanyId());
+        assertEquals(companyMapper.toCompanyResponse(companyMapper.toCompany(company)).getCompanyName(), createdCompany.getCompanyName());
+        assertEquals(companyMapper.toCompanyResponse(companyMapper.toCompany(company)).getEmployees(), createdCompany.getEmployees());
     }
 
     @Test
     void should_updated_when_update_employee_given_employee_message() throws UpdateException {
         //given
         int companyId = 1;
-        Company companyInfo = new Company(companyId, "HansOOCL2");
+        CompanyRequest companyInfo = new CompanyRequest(companyId, "HansOOCL2");
         companyInfo.setEmployees(Arrays.asList(
                 new Employee(1, "Hans", 24, "male", 5000),
                 new Employee(2, "Amy", 22, "female", 9000)));
-        given(companyRepository.findById(companyId)).willReturn(java.util.Optional.of(companyInfo));
-        given(companyRepository.save(companyInfo)).willReturn(companyInfo);
+        given(companyRepository.findById(companyId)).willReturn(java.util.Optional.of(companyMapper.toCompany(companyInfo)));
+        given(companyRepository.save(companyMapper.toCompany(companyInfo))).willReturn(companyMapper.toCompany(companyInfo));
 
         //when
-        Company company = companyService.updateCompany(companyId, companyInfo);
+        CompanyResponse company = companyService.updateCompany(companyId, companyInfo);
 
         //then
-        assertEquals(company,companyInfo);
+        assertEquals(companyMapper.toCompanyResponse(companyMapper.toCompany(companyInfo)).getCompanyId(),company.getCompanyId());
+        assertEquals(companyMapper.toCompanyResponse(companyMapper.toCompany(companyInfo)).getCompanyName(),company.getCompanyName());
+        assertEquals(companyMapper.toCompanyResponse(companyMapper.toCompany(companyInfo)).getEmployees(),company.getEmployees());
     }
 
     @Test
