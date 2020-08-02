@@ -9,6 +9,14 @@ public class CompanyRequest {
     private String companyName;
     private List<Employee> employees;
 
+    public CompanyRequest(){
+
+    }
+
+    public CompanyRequest(String companyName){
+        this.companyName = companyName;
+    }
+
     public CompanyRequest(int companyId, String companyName, List<Employee> employees) {
         this.companyId = companyId;
         this.companyName = companyName;
@@ -16,7 +24,7 @@ public class CompanyRequest {
     }
 
     public CompanyRequest(int companyId, String companyName) {
-        this.companyId = companyId;
+//        this.companyId = companyId;
         this.companyName = companyName;
     }
 

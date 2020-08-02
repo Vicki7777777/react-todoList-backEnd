@@ -139,7 +139,7 @@ public class companyIntegrationTest {
     void should_new_company_when_add_company_given_one_company() throws Exception {
         //given
         String companyBody = "{\n" +
-                "        \"company_Name\": 1,\n" +
+                "        \"company_Name\": \"1\",\n" +
                 "         \"company_Id\":1000\n" +
                 "}";
         mockMvc.perform(post("/companies/").contentType(MediaType.APPLICATION_JSON).content(companyBody))
