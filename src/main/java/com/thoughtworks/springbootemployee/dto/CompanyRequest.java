@@ -24,7 +24,7 @@ public class CompanyRequest {
     }
 
     public CompanyRequest(int companyId, String companyName) {
-//        this.companyId = companyId;
+        this.companyId = companyId;
         this.companyName = companyName;
     }
 

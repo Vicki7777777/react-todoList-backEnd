@@ -25,13 +25,24 @@ import java.util.stream.Collectors;
 public class CompanyService {
 
     @Autowired
-    private CompanyRepository companyRepository;
-    private CompanyMapper companyMapper = new CompanyMapper();
-    private EmployeeMapper employeeMapper = new EmployeeMapper();
+    private final CompanyRepository companyRepository;
+
+    @Autowired
+    private final CompanyMapper companyMapper;
+
+    @Autowired
+    private final EmployeeMapper employeeMapper;
+
+    public CompanyService(CompanyRepository companyRepository, CompanyMapper companyMapper, EmployeeMapper employeeMapper) {
+        this.companyRepository = companyRepository;
+        this.companyMapper = companyMapper;
+        this.employeeMapper = employeeMapper;
+    }
+
 
     public List<CompanyResponse> getAllCompanies() {
         List<Company> companies = companyRepository.findAll();
-        return companies.stream().map(company -> companyMapper.toCompanyResponse(company)).collect(Collectors.toList());
+        return companies.stream().map(companyMapper::toCompanyResponse).collect(Collectors.toList());
     }
 
     public CompanyResponse getCompanyById(Integer id) {

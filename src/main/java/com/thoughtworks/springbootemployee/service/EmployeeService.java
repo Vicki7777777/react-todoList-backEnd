@@ -25,7 +25,7 @@ public class EmployeeService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
-    private EmployeeMapper employeeMapper = new EmployeeMapper();
+    private final EmployeeMapper employeeMapper = new EmployeeMapper();
 
     public List<EmployeeResponse> getAllEmployees() {
         List<Employee> employeeList = employeeRepository.findAll();

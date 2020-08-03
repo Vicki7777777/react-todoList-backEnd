@@ -8,6 +8,10 @@ public class EmployeeResponse {
     private int salary;
     private int companyId;
 
+    public EmployeeResponse(){
+
+    }
+
     public EmployeeResponse(int id, String name, int age, String gender, int salary, int companyId) {
         this.id = id;
         this.name = name;

@@ -37,16 +37,18 @@ import java.util.*;
 public class CompanyServiceTest {
     List<Company> companies = new LinkedList<>();
 
-    @Mock
+
     private CompanyRepository companyRepository;
 
-    @InjectMocks
     private CompanyService companyService;
-    private CompanyMapper companyMapper = new CompanyMapper();
-    private EmployeeMapper employeeMapper = new EmployeeMapper();
+
+    private final CompanyMapper companyMapper = new CompanyMapper();
+    private final EmployeeMapper employeeMapper = new EmployeeMapper();
 
     @BeforeAll
     public void createCompanies() {
+        this.companyRepository = mock(CompanyRepository.class);
+        this.companyService = new CompanyService(this.companyRepository,this.companyMapper,this.employeeMapper);
         companies.add(new Company(1, "OOCL"));
         companies.add(new Company(2, "CargoSmart"));
         companies.add(new Company(3, "Alibaba"));
