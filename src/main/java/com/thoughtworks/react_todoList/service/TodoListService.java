@@ -13,7 +13,7 @@ public class TodoListService {
     }
 
     public Todo addTodo(Todo todo) {
-        // thisTodo = new Todo(todo.content,todo.status);
-        return null;
+        Todo thisTodo = new Todo(todo.getContent(),todo.getStatus());
+        return thisTodo;
     }
 }
