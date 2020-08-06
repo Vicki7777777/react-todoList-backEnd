@@ -5,9 +5,12 @@ import com.thoughtworks.react_todoList.model.Todo;
 import com.thoughtworks.react_todoList.respority.TodoRespority;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class todoListServiceTest {
 
@@ -19,11 +22,12 @@ public class todoListServiceTest {
     void should_return_given_todo_when_post_given_todo(){
         //given
         Todo todo = new Todo("test",false);
+        when(todoRespority.post(todo)).thenReturn(todo);
         //when
         Todo actualTodo = todoListService.addTodo(todo);
         //then
         assertNotNull(actualTodo);
-//        assertEquals(todo.getContent(),actualTodo.getContent());
-//        assertEquals(todo.getStatus(),actualTodo.getStatus());
+        assertEquals(todo.getContent(),actualTodo.getContent());
+        assertEquals(todo.getStatus(),actualTodo.getStatus());
     }
 }
