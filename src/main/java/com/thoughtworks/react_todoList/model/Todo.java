@@ -11,7 +11,7 @@ import javax.persistence.Id;
 public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String content;
     private boolean status;
 
@@ -20,7 +20,7 @@ public class Todo {
         this.status = status;
     }
 
-    public Todo(int id, String content, boolean status) {
+    public Todo(Integer id, String content, boolean status) {
         this.id = id;
         this.content = content;
         this.status = status;
@@ -46,7 +46,7 @@ public class Todo {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 }

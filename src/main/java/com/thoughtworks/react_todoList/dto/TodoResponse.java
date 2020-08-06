@@ -1,21 +1,26 @@
 package com.thoughtworks.react_todoList.dto;
 
 public class TodoResponse {
-    private int id;
+    private Integer id;
     private String content;
     private boolean status;
 
-    public TodoResponse(int id, String content, boolean status) {
+    public TodoResponse(Integer id, String content, boolean status) {
         this.id = id;
         this.content = content;
         this.status = status;
     }
 
-    public int getId() {
+    public TodoResponse(String content, boolean status) {
+        this.content = content;
+        this.status = status;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

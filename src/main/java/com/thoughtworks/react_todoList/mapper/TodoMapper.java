@@ -12,6 +12,7 @@ public class TodoMapper {
     }
 
     public TodoResponse todoResponse(Todo todo){
+        System.out.println(todo);
         return new TodoResponse(todo.getId(),todo.getContent(),todo.getStatus());
     }
 }

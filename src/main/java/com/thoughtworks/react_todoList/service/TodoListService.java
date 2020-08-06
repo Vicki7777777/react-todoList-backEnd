@@ -5,6 +5,7 @@ import com.thoughtworks.react_todoList.dto.TodoResponse;
 import com.thoughtworks.react_todoList.mapper.TodoMapper;
 import com.thoughtworks.react_todoList.model.Todo;
 import com.thoughtworks.react_todoList.repository.TodoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,8 +13,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class TodoListService {
-    private TodoMapper todoMapper;
-    private TodoRepository todoRepository;
+    @Autowired
+    private final TodoMapper todoMapper;
+    @Autowired
+    private final TodoRepository todoRepository;
     public TodoListService(TodoMapper todoMapper, TodoRepository todoRepository) {
         this.todoMapper = todoMapper;
         this.todoRepository = todoRepository;
@@ -33,6 +36,7 @@ public class TodoListService {
     }
 
     public Boolean removeTodo(Integer id) {
-        return null;
+        todoRepository.deleteById(id);
+        return true;
     }
 }
