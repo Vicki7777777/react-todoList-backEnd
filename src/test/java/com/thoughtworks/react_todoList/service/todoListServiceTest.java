@@ -4,12 +4,11 @@ import com.thoughtworks.react_todoList.dto.TodoRequest;
 import com.thoughtworks.react_todoList.dto.TodoResponse;
 import com.thoughtworks.react_todoList.mapper.TodoMapper;
 import com.thoughtworks.react_todoList.model.Todo;
-import com.thoughtworks.react_todoList.respority.TodoRespority;
+import com.thoughtworks.react_todoList.repository.TodoRepository;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -18,14 +17,14 @@ import static org.mockito.Mockito.when;
 public class todoListServiceTest {
 
     private final TodoMapper todoMapper =new TodoMapper();
-    private final TodoRespority todoRespority = mock(TodoRespority.class);
-    private final TodoListService todoListService = new TodoListService(todoMapper,todoRespority);
+    private final TodoRepository todoRepository = mock(TodoRepository.class);
+    private final TodoListService todoListService = new TodoListService(todoMapper,todoRepository);
 
     @Test
     void should_return_given_todo_when_post_given_todo() throws Exception {
         //given
         TodoRequest todoRequest = new TodoRequest("test",false);
-        when(todoRespority.post(todoMapper.toTodo(todoRequest))).thenReturn(todoMapper.toTodo(todoRequest));
+        when(todoRepository.save(todoMapper.toTodo(todoRequest))).thenReturn(todoMapper.toTodo(todoRequest));
         //when
         TodoResponse TodoResponse = todoListService.addTodo(todoRequest);
         //then
@@ -37,7 +36,7 @@ public class todoListServiceTest {
     void should_return_wrong_message_when_post_null_todo(){
         //given
         TodoRequest todoRequest = null;
-        when(todoRespority.post(null)).thenReturn(null);
+        when(todoRepository.save(null)).thenReturn(null);
         //when
         Throwable exception = assertThrows(Exception.class,
                 () -> todoListService.addTodo(todoRequest));
@@ -53,7 +52,7 @@ public class todoListServiceTest {
         List<Todo> todoList = new ArrayList<>();
         todoList.add(todo1);
         todoList.add(todo2);
-        when(todoRespority.get()).thenReturn(todoList);
+        when(todoRepository.findAll()).thenReturn(todoList);
         //when
         List<TodoResponse> todoResponses = todoListService.getAllTodo();
         //then

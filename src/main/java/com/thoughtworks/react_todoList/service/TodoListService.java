@@ -4,27 +4,31 @@ import com.thoughtworks.react_todoList.dto.TodoRequest;
 import com.thoughtworks.react_todoList.dto.TodoResponse;
 import com.thoughtworks.react_todoList.mapper.TodoMapper;
 import com.thoughtworks.react_todoList.model.Todo;
-import com.thoughtworks.react_todoList.respority.TodoRespority;
+import com.thoughtworks.react_todoList.repository.TodoRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Service
 public class TodoListService {
     private TodoMapper todoMapper;
-    private TodoRespority todoRespority;
-    public TodoListService(TodoMapper todoMapper, TodoRespority todoRespority) {
+    private TodoRepository todoRepository;
+    public TodoListService(TodoMapper todoMapper, TodoRepository todoRepository) {
         this.todoMapper = todoMapper;
-        this.todoRespority = todoRespority;
+        this.todoRepository = todoRepository;
     }
 
     public TodoResponse addTodo(TodoRequest todoRequest) throws Exception{
         if(todoRequest == null){
             throw new Exception("unsuccessfully!");
         }
-        Todo todo = new Todo(todoRequest.getContent(),todoRequest.getStatus());
+        Todo todo = todoRepository.save(todoMapper.toTodo(todoRequest));
         return todoMapper.todoResponse(todo);
     }
 
     public List<TodoResponse> getAllTodo() {
-        return null;
+        List<Todo> todoList = todoRepository.findAll();
+        return todoList.stream().map(todoMapper::todoResponse).collect(Collectors.toList());
     }
 }
