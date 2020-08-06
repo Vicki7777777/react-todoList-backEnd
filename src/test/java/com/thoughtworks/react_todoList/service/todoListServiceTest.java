@@ -18,7 +18,7 @@ public class todoListServiceTest {
     private final TodoListService todoListService = new TodoListService(todoMapper,todoRespority);
 
     @Test
-    void should_return_given_todo_when_post_given_todo(){
+    void should_return_given_todo_when_post_given_todo() throws Exception {
         //given
         Todo todo = new Todo("test",false);
         when(todoRespority.post(todo)).thenReturn(todo);
@@ -39,6 +39,6 @@ public class todoListServiceTest {
         Throwable exception = assertThrows(Exception.class,
                 () -> todoListService.addTodo(todo));
         //then
-        assertEquals(new Exception("Add unsuccessful").getMessage(),exception.getMessage());
+        assertEquals(new Exception("unsuccessfully!").getMessage(),exception.getMessage());
     }
 }

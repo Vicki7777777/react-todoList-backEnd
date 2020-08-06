@@ -12,7 +12,10 @@ public class TodoListService {
         this.todoRespority = todoRespority;
     }
 
-    public Todo addTodo(Todo todo) {
+    public Todo addTodo(Todo todo) throws Exception{
+        if(todo == null){
+            throw new Exception("unsuccessfully!");
+        }
         Todo thisTodo = new Todo(todo.getContent(),todo.getStatus());
         return thisTodo;
     }
