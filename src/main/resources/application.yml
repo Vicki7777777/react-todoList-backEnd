@@ -1,5 +1,5 @@
 server:
-  port: 3000
+  port: 3500
 spring:
   datasource:
     url: jdbc:h2:file:./h2/test
