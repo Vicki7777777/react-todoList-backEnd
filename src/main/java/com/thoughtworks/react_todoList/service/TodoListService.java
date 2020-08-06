@@ -31,4 +31,8 @@ public class TodoListService {
         List<Todo> todoList = todoRepository.findAll();
         return todoList.stream().map(todoMapper::todoResponse).collect(Collectors.toList());
     }
+
+    public Boolean removeTodo(Integer id) {
+        return null;
+    }
 }

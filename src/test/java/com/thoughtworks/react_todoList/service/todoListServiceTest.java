@@ -8,6 +8,7 @@ import com.thoughtworks.react_todoList.repository.TodoRepository;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,6 +58,17 @@ public class todoListServiceTest {
         List<TodoResponse> todoResponses = todoListService.getAllTodo();
         //then
         assertEquals(todoList.size(),todoResponses.size());
+    }
 
+    @Test
+    void should_return_true_when_remove_given_right_id(){
+        //given
+        Integer id = 1;
+        Todo todo = new Todo("test1",false);
+        when(todoRepository.findById(id)).thenReturn(java.util.Optional.of(todo));
+        //when
+        Boolean isDelete = todoListService.removeTodo(id);
+        //then
+        assertTrue(isDelete);
     }
 }
