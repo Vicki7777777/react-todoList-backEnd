@@ -1,8 +1,12 @@
 package com.thoughtworks.react_todoList.service;
 
+import com.thoughtworks.react_todoList.dto.TodoRequest;
+import com.thoughtworks.react_todoList.dto.TodoResponse;
 import com.thoughtworks.react_todoList.mapper.TodoMapper;
 import com.thoughtworks.react_todoList.model.Todo;
 import com.thoughtworks.react_todoList.respority.TodoRespority;
+
+import java.util.List;
 
 public class TodoListService {
     private TodoMapper todoMapper;
@@ -12,11 +16,15 @@ public class TodoListService {
         this.todoRespority = todoRespority;
     }
 
-    public Todo addTodo(Todo todo) throws Exception{
-        if(todo == null){
+    public TodoResponse addTodo(TodoRequest todoRequest) throws Exception{
+        if(todoRequest == null){
             throw new Exception("unsuccessfully!");
         }
-        Todo thisTodo = new Todo(todo.getContent(),todo.getStatus());
-        return thisTodo;
+        Todo todo = new Todo(todoRequest.getContent(),todoRequest.getStatus());
+        return todoMapper.todoResponse(todo);
+    }
+
+    public List<TodoResponse> getAllTodo() {
+        return null;
     }
 }

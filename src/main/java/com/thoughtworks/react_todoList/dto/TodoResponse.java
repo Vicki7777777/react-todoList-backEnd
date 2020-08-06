@@ -1,19 +1,22 @@
-package com.thoughtworks.react_todoList.model;
+package com.thoughtworks.react_todoList.dto;
 
-public class Todo {
+public class TodoResponse {
     private int id;
     private String content;
     private boolean status;
 
-    public Todo(String content, boolean status) {
+    public TodoResponse(int id, String content, boolean status) {
+        this.id = id;
         this.content = content;
         this.status = status;
     }
 
-    public Todo(int id, String content, boolean status) {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
         this.id = id;
-        this.content = content;
-        this.status = status;
     }
 
     public String getContent() {
@@ -24,19 +27,11 @@ public class Todo {
         this.content = content;
     }
 
-    public boolean getStatus() {
+    public boolean isStatus() {
         return status;
     }
 
     public void setStatus(boolean status) {
         this.status = status;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }
