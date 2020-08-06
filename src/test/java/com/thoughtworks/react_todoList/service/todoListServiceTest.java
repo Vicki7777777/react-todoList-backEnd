@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,5 +28,17 @@ public class todoListServiceTest {
         assertNotNull(actualTodo);
         assertEquals(todo.getContent(),actualTodo.getContent());
         assertEquals(todo.getStatus(),actualTodo.getStatus());
+    }
+
+    @Test
+    void should_return_wrong_message_when_post_null_todo(){
+        //given
+        Todo todo = null;
+        when(todoRespority.post(null)).thenReturn(null);
+        //when
+        Throwable exception = assertThrows(Exception.class,
+                () -> todoListService.addTodo(todo));
+        //then
+        assertEquals(new Exception("Add unsuccessful").getMessage(),exception.getMessage());
     }
 }
