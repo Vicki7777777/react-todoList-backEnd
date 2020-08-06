@@ -6,6 +6,9 @@ public class TodoRequest {
     private String content;
     private boolean status;
 
+    public TodoRequest() {
+    }
+
     public TodoRequest(String content, boolean status) {
         this.content = content;
         this.status = status;

@@ -15,6 +15,9 @@ public class Todo {
     private String content;
     private boolean status;
 
+    public Todo() {
+    }
+
     public Todo(String content, boolean status) {
         this.content = content;
         this.status = status;
@@ -42,7 +45,7 @@ public class Todo {
         this.status = status;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

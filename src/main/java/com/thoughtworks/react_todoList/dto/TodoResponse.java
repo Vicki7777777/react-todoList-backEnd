@@ -5,6 +5,9 @@ public class TodoResponse {
     private String content;
     private boolean status;
 
+    public TodoResponse() {
+    }
+
     public TodoResponse(Integer id, String content, boolean status) {
         this.id = id;
         this.content = content;
@@ -32,7 +35,7 @@ public class TodoResponse {
         this.content = content;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 

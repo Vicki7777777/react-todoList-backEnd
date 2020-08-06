@@ -6,13 +6,11 @@ import com.thoughtworks.react_todoList.mapper.TodoMapper;
 import com.thoughtworks.react_todoList.model.Todo;
 import com.thoughtworks.react_todoList.repository.TodoRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -28,7 +26,7 @@ public class todoListServiceTest {
     @Test
     void should_return_given_todo_when_post_given_todo() throws Exception {
         //given
-        TodoRequest todoRequest = new TodoRequest(1, "test", false);
+        TodoRequest todoRequest = new TodoRequest("test", false);
         given(todoRepository.save(todoMapper.toTodo(todoRequest))).willReturn(todoMapper.toTodo(todoRequest));
         //when
         TodoResponse TodoResponse = todoListService.addTodo(todoRequest);
@@ -65,10 +63,10 @@ public class todoListServiceTest {
     }
 
     @Test
-    void should_return_true_when_remove_given_right_id() {
+    void should_return_true_when_remove_given_right_id() throws Exception {
         //given
         Integer id = 1;
-        Todo todo = new Todo("test", false);
+        Todo todo = new Todo(1,"test", false);
         when(todoRepository.findById(id)).thenReturn(java.util.Optional.of(todo));
         //when
         Boolean isDelete = todoListService.removeTodo(id);
@@ -84,6 +82,34 @@ public class todoListServiceTest {
         //when
         Throwable exception = assertThrows(Exception.class,
                 () -> todoListService.removeTodo(id));
+        //then
+        assertEquals(new Exception("unsuccessfully!").getMessage(), exception.getMessage());
+    }
+
+    @Test
+    void should_return_todo_message_when_update_given_right_todo() throws Exception {
+        //given
+        Integer id = 1;
+        TodoRequest todoRequest = new TodoRequest( "test", false);
+        TodoRequest updateTodoRequest = new TodoRequest( "test", true);
+        Todo todo = todoMapper.toTodo(todoRequest);
+        given(todoRepository.findById(id)).willReturn(Optional.ofNullable(todo));
+        given(todoRepository.saveAndFlush(todoMapper.toTodo(todoRequest))).willReturn(todoMapper.toTodo(updateTodoRequest));
+        //when
+        TodoResponse todoResponse = todoListService.updateTodo(id,updateTodoRequest);
+        //then
+        assertEquals(todoMapper.todoResponse(todo).getStatus(),todoResponse.getStatus());
+    }
+
+    @Test
+    void should_return_wrong_message_when_update_given_non_existent_id(){
+        //given
+        Integer id = 1;
+        TodoRequest todoRequest = new TodoRequest( "test", false);
+        given(todoRepository.findById(id)).willReturn(null);
+        //when
+        Throwable exception = assertThrows(Exception.class,
+                () -> todoListService.updateTodo(id,todoRequest));
         //then
         assertEquals(new Exception("unsuccessfully!").getMessage(), exception.getMessage());
     }

@@ -17,6 +17,7 @@ public class TodoListService {
     private final TodoMapper todoMapper;
     @Autowired
     private final TodoRepository todoRepository;
+
     public TodoListService(TodoMapper todoMapper, TodoRepository todoRepository) {
         this.todoMapper = todoMapper;
         this.todoRepository = todoRepository;
@@ -35,8 +36,20 @@ public class TodoListService {
         return todoList.stream().map(todoMapper::todoResponse).collect(Collectors.toList());
     }
 
-    public Boolean removeTodo(Integer id) {
+    public Boolean removeTodo(Integer id) throws Exception {
+        if(todoRepository.findById(id) == null){
+            throw new Exception("unsuccessfully!");
+        }
         todoRepository.deleteById(id);
         return true;
     }
+
+    public TodoResponse updateTodo(Integer id, TodoRequest updateTodoRequest) throws Exception {
+        if(todoRepository.findById(id) == null){
+            throw new Exception("unsuccessfully!");
+        }
+        Todo todo = todoRepository.save(todoMapper.toTodo(updateTodoRequest));
+        return todoMapper.todoResponse(todoRepository.save(todoMapper.toTodo(updateTodoRequest)));
+    }
+
 }
