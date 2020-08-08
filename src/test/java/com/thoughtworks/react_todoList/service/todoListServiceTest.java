@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 public class todoListServiceTest {
 
-    private final TodoMapper todoMapper =new TodoMapper();
+    private final TodoMapper todoMapper = mock(TodoMapper.class);
     private final TodoRepository todoRepository = mock(TodoRepository.class);
     private final TodoListService todoListService = new TodoListService(todoMapper,todoRepository);
 
@@ -27,22 +27,25 @@ public class todoListServiceTest {
     void should_return_given_todo_when_post_given_todo() throws Exception {
         //given
         TodoRequest todoRequest = new TodoRequest("test", false);
-        given(todoRepository.save(todoMapper.toTodo(todoRequest))).willReturn(todoMapper.toTodo(todoRequest));
+        Todo todo = new Todo("test", false);
+        TodoResponse todoResponse = new TodoResponse("test", false);
+        given(todoMapper.toTodo(todoRequest)).willReturn(todo);
+        given(todoRepository.save(todo)).willReturn(todo);
+        given(todoMapper.todoResponse(todo)).willReturn(todoResponse);
         //when
-        TodoResponse TodoResponse = todoListService.addTodo(todoRequest);
+        TodoResponse TodoResponseTest = todoListService.addTodo(todoRequest);
         //then
-        assertNotNull(TodoResponse);
-        assertEquals(todoRequest.getContent(),TodoResponse.getContent());
+        assertNotNull(TodoResponseTest);
+        assertEquals(todoRequest.getContent(),TodoResponseTest.getContent());
     }
 
     @Test
     void should_return_wrong_message_when_post_null_todo() {
         //given
-        TodoRequest todoRequest = null;
         when(todoRepository.save(null)).thenReturn(null);
         //when
         Throwable exception = assertThrows(Exception.class,
-                () -> todoListService.addTodo(todoRequest));
+                () -> todoListService.addTodo(null));
         //then
         assertEquals(new Exception("unsuccessfully!").getMessage(), exception.getMessage());
     }
@@ -92,13 +95,21 @@ public class todoListServiceTest {
         Integer id = 1;
         TodoRequest todoRequest = new TodoRequest( "test", false);
         TodoRequest updateTodoRequest = new TodoRequest( "test", true);
-        Todo todo = todoMapper.toTodo(todoRequest);
-        given(todoRepository.findById(id)).willReturn(Optional.ofNullable(todo));
-        given(todoRepository.saveAndFlush(todoMapper.toTodo(todoRequest))).willReturn(todoMapper.toTodo(updateTodoRequest));
+        Todo todo = new Todo("test", false);
+        Todo updateTodo = new Todo("test", true);
+        TodoResponse todoResponse = new TodoResponse("test", true);
+        TodoResponse updateTodoResponse = new TodoResponse("test", true);
+        given(todoRepository.findById(id)).willReturn(Optional.of(todo));
+        given(todoRepository.save(todo)).willReturn(todo);
+        given(todoMapper.toTodo(todoRequest)).willReturn(todo);
+        given(todoMapper.toTodo(updateTodoRequest)).willReturn(updateTodo);
+        given(todoMapper.todoResponse(todo)).willReturn(todoResponse);
+        given(todoMapper.todoResponse(updateTodo)).willReturn(updateTodoResponse);
+        given(todoRepository.save(updateTodo)).willReturn(updateTodo);
         //when
-        TodoResponse todoResponse = todoListService.updateTodo(id,updateTodoRequest);
+        TodoResponse todoResponseTest = todoListService.updateTodo(id,updateTodoRequest);
         //then
-        assertEquals(todoMapper.todoResponse(todo).getStatus(),todoResponse.getStatus());
+        assertEquals(updateTodo.getStatus(),todoResponseTest.getStatus());
     }
 
     @Test
